@@ -1,13 +1,11 @@
 import {
+  emitEvent,
   setDebug,
   themeParams,
   initData,
   viewport,
   init as initSDK,
   mockTelegramEnv,
-  type ThemeParams,
-  retrieveLaunchParams,
-  emitEvent,
   miniApp,
   backButton,
 } from '@tma.js/sdk-react';
@@ -66,6 +64,7 @@ export async function init(options: {
     themeParams.mount();
     miniApp.mount();
     themeParams.bindCssVars();
+    backButton.show();
   }
 
   if (viewport.mount.isAvailable()) {

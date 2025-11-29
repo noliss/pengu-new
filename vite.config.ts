@@ -14,7 +14,7 @@ export default defineConfig({
   },
   base: './', // Важно для Mini Apps
   build: {
-    outDir: 'dist',
+    outDir: 'build',
     sourcemap: true // Полезно для отладки
   }
 })

@@ -1,22 +1,17 @@
 import Container from "@mui/material/Container";
-import { useAppSelector } from "../../store/hooks";
-import { useUserSelector } from "../../store/selectors/userSelector";
 import Typography from "@mui/material/Typography";
-import {
-  Avatar,
-  BottomNavigation,
-  BottomNavigationAction,
-  Card,
-  CardContent,
-  CardMedia,
-  Grid,
-  useMediaQuery,
-  useTheme,
-  Box,
-  IconButton,
-  TextField,
-  InputAdornment,
-} from "@mui/material";
+import BottomNavigation from '@mui/material/BottomNavigation'
+import BottomNavigationAction from '@mui/material/BottomNavigationAction'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardMedia from '@mui/material/CardMedia'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
+import TextField from '@mui/material/TextField'
+import Grid from '@mui/material/Grid'
+import InputAdornment from '@mui/material/InputAdornment'
+
 import { KeyboardArrowRightOutlined, Search } from "@mui/icons-material";
 import PersonIcon from "@mui/icons-material/Person";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
@@ -24,6 +19,7 @@ import AppsIcon from "@mui/icons-material/Apps";
 import SortIcon from "@mui/icons-material/Sort";
 import { TonConnectButton } from "@tonconnect/ui-react";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
 
 const collections = [
   "Pengu Gold",
@@ -31,10 +27,11 @@ const collections = [
   "Doodles",
   "Pengu Friends",
   "Title Title Title Title Title",
+  "Doodles New",
+  "Doodles Old",
 ];
 
 export const Collections = () => {
-  const user = useAppSelector(useUserSelector);
   const navigate = useNavigate();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down(510));
@@ -58,31 +55,7 @@ export const Collections = () => {
           >
             Collections
           </Typography>
-          {/* <Grid
-            container
-            alignItems="center"
-            gap={2}
-            sx={{
-              background: "rgba(255, 255, 255, 0.11)",
-              padding: "5px 10px",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255, 255, 255, 0.2)",
-              borderRadius: "16px",
-              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-            }}
-          > */}
-            <TonConnectButton style={{ maxWidth: '160px' }} />
-            {/* <Typography
-              variant="body2"
-              sx={{
-                color: "white",
-                textShadow: "0 0 10px rgba(255, 255, 255, 0.5)",
-              }}
-            >
-              {user?.first_name} {user?.last_name}
-            </Typography>
-            <Avatar src={user?.photo_url} /> */}
-          {/* </Grid> */}
+          <TonConnectButton style={{ maxWidth: '160px' }} />
         </Grid>
 
         {/* Стилизованный TextField */}
@@ -189,6 +162,7 @@ export const Collections = () => {
                       backdropFilter: "blur(5px)",
                       borderTop: "1px solid rgba(255, 255, 255, 0.1)",
                       height: "fit-content",
+                      padding: '5px 10px',
                     }}
                   >
                     <Grid
@@ -220,26 +194,56 @@ export const Collections = () => {
         </Grid>
       </Container>
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation с эффектом стеклянного морфизма */}
       <BottomNavigation
         sx={{
-          background: "rgba(255, 255, 255, 0.2)",
+          background: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(5px)",
+          borderTop: "1px solid rgba(255, 255, 255, 0.2)",
           position: "fixed",
           bottom: 0,
           left: 0,
           right: 0,
           zIndex: 1000,
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
+            zIndex: -1,
+          },
           "& .MuiBottomNavigationAction-root": {
-            color: "white",
+            color: "rgba(255, 255, 255, 0.8)",
+            minWidth: "auto",
+            padding: "8px 12px",
+            transition: "all 0.3s ease",
+            "&:hover": {
+              color: "white",
+              background: "rgba(255, 255, 255, 0.1)",
+              borderRadius: "12px",
+            },
             "&.Mui-selected": {
               color: "white",
+              background: "rgba(255, 255, 255, 0.15)",
+              borderRadius: "12px",
+              boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
             },
           },
           "& .MuiBottomNavigationAction-label": {
-            color: "white",
+            fontSize: "0.75rem",
+            fontWeight: 500,
+            transition: "all 0.3s ease",
             "&.Mui-selected": {
-              color: "white",
+              fontSize: "0.8rem",
+              fontWeight: 600,
             },
+          },
+          "& .MuiSvgIcon-root": {
+            fontSize: "1.5rem",
+            transition: "all 0.3s ease",
           },
         }}
         showLabels
