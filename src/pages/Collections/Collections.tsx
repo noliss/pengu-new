@@ -26,9 +26,12 @@ const collections = [
   "Pengu Silver",
   "Doodles",
   "Pengu Friends",
-  "Title Title Title Title Title",
+  "Doodles New #2 New #2 New #2 New #2 New #2",
   "Doodles New",
+  "Doodles New #3",
   "Doodles Old",
+  "Doodles New #2",
+  "Doodles New #2 New #2 New #2 New #2 New #2",
 ];
 
 export const Collections = () => {
@@ -161,8 +164,9 @@ export const Collections = () => {
                       background: "rgba(0, 0, 0, 0.3)",
                       backdropFilter: "blur(5px)",
                       borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-                      height: "fit-content",
-                      padding: '5px 10px',
+                      height: '38px',
+                      padding: '10px 10px',
+                      paddingBottom: '10px !important',
                     }}
                   >
                     <Grid
@@ -180,9 +184,9 @@ export const Collections = () => {
                           fontWeight: 500,
                         }}
                       >
-                        {item}
+                        {item.length > 20 ? `${item.substring(0, 28)}...` : item}
                       </Typography>
-                      <IconButton type="button" sx={{ color: "white" }}>
+                      <IconButton type="button" sx={{ color: "white", padding: 0 }}>
                         <KeyboardArrowRightOutlined />
                       </IconButton>
                     </Grid>
@@ -197,9 +201,10 @@ export const Collections = () => {
       {/* Bottom Navigation с эффектом стеклянного морфизма */}
       <BottomNavigation
         sx={{
-          background: "rgba(255, 255, 255, 0.15)",
+          background: "rgba(0, 0, 0, 0.5)",
           backdropFilter: "blur(5px)",
-          borderTop: "1px solid rgba(255, 255, 255, 0.2)",
+          borderTop: "2px solid rgba(255, 255, 255, 0.2)",
+          borderRadius: '40px 40px 0 0',
           position: "fixed",
           bottom: 0,
           left: 0,
@@ -212,6 +217,7 @@ export const Collections = () => {
             left: 0,
             right: 0,
             bottom: 0,
+            borderRadius: '40px 40px 0 0',
             background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
             zIndex: -1,
           },
@@ -220,10 +226,11 @@ export const Collections = () => {
             minWidth: "auto",
             padding: "8px 12px",
             transition: "all 0.3s ease",
+            borderRadius: '40px 40px 0 0',
             "&:hover": {
               color: "white",
               background: "rgba(255, 255, 255, 0.1)",
-              borderRadius: "12px",
+              borderRadius: '40px 40px 0 0',
             },
             "&.Mui-selected": {
               color: "white",

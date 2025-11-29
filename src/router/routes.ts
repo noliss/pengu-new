@@ -1,4 +1,4 @@
-import { ComponentType } from 'react';
+import type { ComponentType, JSX } from 'react';
 import { Collections } from '../pages/Collections/Collections';
 import { Generate } from '../pages/Generate/Generate';
 import { Profile } from '../pages/Profile/Profile';
