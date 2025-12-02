@@ -8,11 +8,10 @@ const initialState: AppState = {
 };
 
 const userSlice = createSlice({
-  name: 'app',
+  name: 'user',
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<User>) => {
-      console.log('action', action.payload)
       state.user = action.payload;
       state.isAuthenticated = true;
     },

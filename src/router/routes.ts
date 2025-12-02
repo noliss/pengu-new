@@ -2,6 +2,7 @@ import type { ComponentType, JSX } from 'react';
 import { Collections } from '../pages/Collections/Collections';
 import { Generate } from '../pages/Generate/Generate';
 import { Profile } from '../pages/Profile/Profile';
+import { ROUTES } from './paths';
 
 interface Route {
   path: string;
@@ -12,16 +13,16 @@ interface Route {
 
 export const routes: Route[] = [
   { 
-    path: '/', 
+    path: ROUTES.COLLECTIONS, 
     Component: Collections 
   },
   { 
-    path: '/generate/', 
+    path: ROUTES.GENERATE, 
     Component: Generate,
     title: 'Generate'
   },
   { 
-    path: '/profile/', 
+    path: ROUTES.PROFILE, 
     Component: Profile,
     title: 'Profile'
   },

@@ -8,6 +8,9 @@ import {
   mockTelegramEnv,
   miniApp,
   backButton,
+  isTMA,
+  retrieveLaunchParams,
+  swipeBehavior
 } from '@tma.js/sdk-react';
 
 /**
@@ -56,20 +59,48 @@ export async function init(options: {
     });
   }
 
-  // Mount all components used in the project.
-  backButton.mount.ifAvailable();
-  initData.restore();
+  // Check if running in Telegram Mini App
+  const isTelegramApp = await isTMA();
 
-  if (miniApp.mount.isAvailable()) {
-    themeParams.mount();
-    miniApp.mount();
-    themeParams.bindCssVars();
-    backButton.show();
-  }
+  if (isTelegramApp) {
+    // Get platform to check if it's mobile
+    const launchParams = retrieveLaunchParams();
+    const platform = launchParams.tgWebAppPlatform;
+    const isMobile = platform === 'ios' || platform === 'android';
 
-  if (viewport.mount.isAvailable()) {
-    viewport.mount().then(() => {
+    // Mount all components used in the project.
+    backButton.mount.ifAvailable();
+    initData.restore();
+
+    if (miniApp.mount.isAvailable()) {
+      themeParams.mount();
+      miniApp.mount();
+      themeParams.bindCssVars();
+      backButton.show();
+    }
+
+    // Mount swipeBehavior first, then disable vertical swipes
+    if (swipeBehavior.mount.isAvailable()) {
+      swipeBehavior.mount();
+      
+      // After mounting, disable vertical swipes
+      if (swipeBehavior.disableVertical.isAvailable()) {
+        swipeBehavior.disableVertical();
+      }
+    }
+
+    // Initialize viewport with expand and fullscreen
+    if (viewport.mount.isAvailable()) {
+      await viewport.mount();
       viewport.bindCssVars();
-    });
+      
+      // Expand the Mini App viewport
+      viewport.expand();
+      
+      // Request fullscreen only on mobile devices
+      if (isMobile && viewport.requestFullscreen.isAvailable()) {
+        await viewport.requestFullscreen();
+      }
+    }
   }
 }

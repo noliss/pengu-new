@@ -1,11 +1,4 @@
-export interface User {
-  id: number;
-  username?: string;
-  first_name?: string;
-  last_name?: string;
-  language_code?: string;
-  photo_url?: string;
-}
+import type { User } from '@tma.js/sdk-react';
 
 export interface AppState {
   user: User | null;
