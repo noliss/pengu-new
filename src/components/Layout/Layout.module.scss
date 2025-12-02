@@ -1,0 +1,10 @@
+.container {
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 56px;
+  
+  &.mobile {
+    padding-top: 80px;
+  }
+}
+

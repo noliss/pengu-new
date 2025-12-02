@@ -3,17 +3,21 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import Box from '@mui/material/Box';
+import type { SxProps, Theme } from '@mui/material';
 import AppsIcon from "@mui/icons-material/Apps";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import PersonIcon from "@mui/icons-material/Person";
 import { ROUTES } from '../../router/paths';
 import { useIsMobile } from '../../hooks/useIsMobile';
+import styles from './Layout.module.scss';
+import cn from 'classnames';
 
 interface LayoutProps {
   children: ReactNode;
+  sx?: SxProps<Theme>;
 }
 
-export const Layout = ({ children }: LayoutProps) => {
+export const Layout = ({ children, sx }: LayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useIsMobile();
@@ -26,7 +30,10 @@ export const Layout = ({ children }: LayoutProps) => {
   };
 
   return (
-    <Box sx={{ position: "relative", minHeight: "100vh", pb: 7, pt: isMobile ? 10 : 0 }}>
+    <Box 
+      className={cn(styles.container, { [styles.mobile]: isMobile })}
+      sx={sx}
+    >
       {children}
       
       <BottomNavigation

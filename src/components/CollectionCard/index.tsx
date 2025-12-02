@@ -7,14 +7,17 @@ import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { KeyboardArrowRightOutlined, ImageOutlined } from "@mui/icons-material";
+import type { SxProps, Theme } from '@mui/material';
+import styles from './CollectionCard.module.scss';
 
 interface CollectionCardProps {
   title: string;
   imageUrl: string;
   onClick?: () => void;
+  sx?: SxProps<Theme>;
 }
 
-export const CollectionCard = ({ title, imageUrl, onClick }: CollectionCardProps) => {
+export const CollectionCard = ({ title, imageUrl, onClick, sx }: CollectionCardProps) => {
   const [imageError, setImageError] = useState(false);
   const truncatedTitle = title.length > 20 ? `${title.substring(0, 28)}...` : title;
 
@@ -35,19 +38,11 @@ export const CollectionCard = ({ title, imageUrl, onClick }: CollectionCardProps
           boxShadow: "0 8px 30px rgba(0, 0, 0, 0.2)",
           border: "1px solid rgba(255, 255, 255, 0.3)",
         },
+        ...sx,
       }}
     >
       {imageError ? (
-        <Box
-          sx={{
-            height: 140,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'rgba(255, 255, 255, 0.05)',
-            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-          }}
-        >
+        <Box className={styles.imageErrorBox}>
           <ImageOutlined sx={{ fontSize: 48, color: 'rgba(255, 255, 255, 0.3)' }} />
         </Box>
       ) : (
@@ -87,7 +82,13 @@ export const CollectionCard = ({ title, imageUrl, onClick }: CollectionCardProps
           >
             {truncatedTitle}
           </Typography>
-          <IconButton type="button" sx={{ color: "white", padding: 0 }}>
+          <IconButton
+            type="button"
+            sx={{
+              color: "white",
+              padding: 0,
+            }}
+          >
             <KeyboardArrowRightOutlined />
           </IconButton>
         </Grid>

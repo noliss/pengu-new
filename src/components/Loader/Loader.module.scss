@@ -1,0 +1,38 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 0;
+
+  &.withText {
+    gap: 16px;
+  }
+}
+
+.progressWrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.progressBackground {
+  color: rgba(255, 255, 255, 0.1);
+}
+
+.progressForeground {
+  color: rgba(255, 255, 255, 0.7);
+  position: absolute;
+  left: 0;
+
+  :global(.MuiCircularProgress-circle) {
+    stroke-linecap: round;
+  }
+}
+
+.text {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+

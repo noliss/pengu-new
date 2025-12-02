@@ -1,13 +1,16 @@
 import { useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
+import type { SxProps, Theme } from '@mui/material';
 import { TonConnectButton, useTonConnectUI } from "@tonconnect/ui-react";
+import styles from './PageHeader.module.scss';
 
 interface PageHeaderProps {
   title: string;
+  sx?: SxProps<Theme>;
 }
 
-export const PageHeader = ({ title }: PageHeaderProps) => {
+export const PageHeader = ({ title, sx }: PageHeaderProps) => {
   const [tonConnectUI] = useTonConnectUI();
 
   useEffect(() => {
@@ -22,19 +25,17 @@ export const PageHeader = ({ title }: PageHeaderProps) => {
       container
       justifyContent="space-between"
       alignItems="center"
-      pb={3}
+      className={styles.container}
+      sx={sx}
     >
       <Typography
         align="center"
         variant="h5"
-        sx={{
-          color: "white",
-          textShadow: "0 0 10px rgba(255, 255, 255, 0.5)",
-        }}
+        className={styles.title}
       >
         {title}
       </Typography>
-      <TonConnectButton style={{ maxWidth: '160px' }} />
+      <TonConnectButton className={styles.connectButton} />
     </Grid>
   );
 };
