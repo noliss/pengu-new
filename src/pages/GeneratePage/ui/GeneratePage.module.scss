@@ -1,10 +1,10 @@
 @use '@shared/styles/tokens' as t;
 
 // Content занимает всю рабочую высоту Layout'а (после safe-area и BottomNav).
-// Stage (1fr) всегда тянется, съедая всё свободное место. Dock (auto) берёт
-// ровно столько, сколько нужно его содержимому, включая раскрытый редактор —
-// так между пингвином и чипсами частей тела нет "мёртвой зоны", а при открытии
-// редактора пингвин плавно сжимается, освобождая место.
+// Строки: [switcher auto] [stage 1fr] [dock auto]. Переключатель коллекции —
+// компактный, dock берёт столько, сколько нужно (включая раскрытый редактор),
+// stage съедает всё свободное — так между пингвином и dock'ом нет "мёртвой
+// зоны", а открытие редактора плавно сжимает превью.
 .content {
   // --available-height задаёт Layout: 100dvh минус BottomNav и top-safe-area.
   // Fallback на случай, если страница открыта вне Layout.
@@ -14,7 +14,7 @@
   padding: 15px;
   box-sizing: border-box;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   // minmax(0, 1fr): ключевой фикс — без этого track берёт max-content
   // (intrinsic ~1000px у Lottie-svg) и распирает всю сетку.
   grid-template-columns: minmax(0, 1fr);
