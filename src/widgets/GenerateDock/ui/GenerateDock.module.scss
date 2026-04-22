@@ -1,151 +1,28 @@
 @use '@shared/styles/tokens' as t;
 
-// Высота BottomNav ~56px. Небольшой зазор даёт увидеть скруглённый верх bottomnav,
-// создавая ощущение "плавающего" стеклянного блока.
-$bottom-nav-gap: 60px;
-
 .dock {
-  position: fixed;
-  bottom: $bottom-nav-gap;
-  left: 8px;
-  right: 8px;
-  z-index: t.$z-floating-panel;
-  padding: 6px 12px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-
-  background: rgba(10, 10, 10, 0.55);
-  backdrop-filter: t.$blur-lg;
-  -webkit-backdrop-filter: t.$blur-lg;
-  border: 1px solid t.$color-glass-border-soft;
-  border-radius: t.$radius-xxl;
-  box-shadow:
-    0 -8px 32px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  box-sizing: border-box;
-  overflow: hidden;
-
-  // тонкая светящаяся кромка сверху — "стекло" ловит свет
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 20%;
-    right: 20%;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.5) 50%,
-      transparent 100%
-    );
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  // мягкое свечение снизу у края — для глубины
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 40%;
-    background: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.08) 0%,
-      transparent 100%
-    );
-    pointer-events: none;
-    border-radius: t.$radius-xxl t.$radius-xxl 0 0;
-    z-index: 0;
-  }
-}
-
-.handleRow {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 18px;
-  z-index: 2;
-}
-
-.handle {
-  width: 42px;
-  height: 4px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.25);
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.4);
-  }
-
-  &:active {
-    transform: scaleX(0.9);
-  }
-}
-
-.collapseButton {
-  position: absolute;
-  right: 2px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 26px;
-  height: 26px;
-  color: rgba(255, 255, 255, 0.7);
-  background: transparent;
-  transition: transform 0.25s ease, color 0.2s ease;
-
-  &:hover {
-    color: t.$color-text-primary;
-    background: rgba(255, 255, 255, 0.06);
-  }
-
-  svg {
-    transition: transform 0.25s ease;
-  }
-}
-
-.collapsedIcon svg {
-  transform: rotate(180deg);
-}
-
-// контейнер, который "схлопывается" при свёрнутом состоянии
-.collapsible {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-height: 260px;
-  overflow: hidden;
-  opacity: 1;
-  transition: max-height 0.28s ease, opacity 0.2s ease, margin 0.2s ease;
-  position: relative;
-  z-index: 2;
-}
-
-.dock.collapsed .collapsible {
-  max-height: 0;
-  opacity: 0;
-  pointer-events: none;
-  margin: -4px 0;
-}
-
-.row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-}
-
-.svgCol {
-  flex: 1;
-  min-width: 0;
-}
-
-.colorCol {
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0 2px;
+}
+
+.editorRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editorSlider {
+  flex: 1;
+  min-width: 0; // чтобы embla корректно считал ширину и не ломал родителя
 }

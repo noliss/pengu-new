@@ -11,6 +11,22 @@
   flex: 1;
   cursor: grab;
 
+  // Плавное затухание по краям вместо резкого "обреза"
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 10px,
+    #000 calc(100% - 10px),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 10px,
+    #000 calc(100% - 10px),
+    transparent 100%
+  );
+
   &:active {
     cursor: grabbing;
   }
@@ -60,7 +76,6 @@
     border-color: rgba(255, 255, 255, 0.35);
   }
 
-  // selected рисуем через inset-тень, border остаётся 1px — layout не двигается
   &.selected {
     background: t.$color-glass-bg-strong;
     border-color: t.$color-accent;
@@ -76,8 +91,7 @@
 
   // Для текстовых карточек намеренно НЕ рисуем "configured" подсветку:
   // она визуально сливается с акцентным selected (оба светлые) и путает пользователя.
-  // Активная часть показывается через selected; какие части уже сконфигурированы,
-  // пользователь видит на превью персонажа.
+  // Активная часть показывается через selected; какие части уже сконфигурированы
 
   &.selected {
     background: t.$color-accent;

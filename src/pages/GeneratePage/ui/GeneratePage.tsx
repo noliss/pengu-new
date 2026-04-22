@@ -15,13 +15,13 @@ export const GeneratePage = () => {
           </Box>
           <Box className={styles.stageShadow} aria-hidden />
         </Box>
-      </Box>
 
-      <GenerateDock
-        onGenerate={() => {
-          // TODO: запустить генерацию через api/thunk
-        }}
-      />
+        <GenerateDock
+          onGenerate={() => {
+            // TODO: запустить генерацию через api/thunk
+          }}
+        />
+      </Box>
     </Page>
   );
 };

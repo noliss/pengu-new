@@ -50,11 +50,30 @@ const characterSlice = createSlice({
       state.draft.generationType = action.payload;
     },
     setActivePartId: (state, action: PayloadAction<string | null>) => {
+      // Пушим историю только при реальной смене значения — иначе повторные клики
+      // по той же части зашумляли бы стек. Пуш важен, чтобы undo мог сбросить
+      // выбранную часть тела обратно в null даже после нескольких отмен selections.
+      if (state.activePartId === action.payload) return;
+      pushHistory(state);
       state.activePartId = action.payload;
     },
     setPartSelection: (state, action: PayloadAction<PartSelection>) => {
-      pushHistory(state);
-      state.draft.selections[action.payload.partId] = action.payload;
+      const { partId, svgId } = action.payload;
+      const prev = state.draft.selections[partId];
+      const last = state.history[state.history.length - 1];
+
+      // Это защищает стек от спама событий HexColorPicker и сохраняет возможность
+      // откатиться к состоянию до начала редактирования цвета.
+      const isColorOnlyChange = Boolean(prev) && prev?.svgId === svgId;
+      const alreadyCaptured =
+        isColorOnlyChange &&
+        last?.selections[partId]?.svgId === svgId &&
+        last.activePartId === state.activePartId;
+
+      if (!alreadyCaptured) {
+        pushHistory(state);
+      }
+      state.draft.selections[partId] = action.payload;
     },
     clearPartSelection: (state, action: PayloadAction<string>) => {
       if (!(action.payload in state.draft.selections)) return;

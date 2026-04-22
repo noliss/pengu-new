@@ -1,21 +1,19 @@
 @use '@shared/styles/tokens' as t;
 
-// Резервируем место под док: ~260px (док, актуальная высота варьируется)
-// + 60px до bottomnav + небольшой зазор. Layout сам добавляет padding-bottom под BottomNav.
-$dock-reserve: 240px;
+// Layout сам добавляет padding-bottom под BottomNav (~56px)
 
 .content {
   padding: 15px;
-  padding-bottom: $dock-reserve;
   min-height: calc(100vh - 56px);
   display: flex;
   flex-direction: column;
+  gap: 12px;
 }
 
 .stage {
   position: relative;
   flex: 1;
-  min-height: 260px;
+  min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
