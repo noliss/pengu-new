@@ -1,2 +1,0 @@
-export { LottieAnimation } from './LottieAnimation';
-

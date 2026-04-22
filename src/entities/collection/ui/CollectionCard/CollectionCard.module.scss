@@ -1,0 +1,44 @@
+@use '@shared/styles/tokens' as t;
+
+.card {
+  overflow: hidden;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: t.$shadow-card-hover;
+    border: 1px solid t.$color-glass-border-strong;
+  }
+}
+
+.media {
+  height: 140px;
+  border-bottom: 1px solid t.$color-glass-border-soft;
+}
+
+.imageErrorBox {
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: t.$color-glass-bg-soft;
+  border-bottom: 1px solid t.$color-glass-border-soft;
+}
+
+.content {
+  background: t.$color-overlay;
+  backdrop-filter: t.$blur-sm;
+  border-top: 1px solid t.$color-glass-border-soft;
+  height: 38px;
+  padding: 10px;
+  padding-bottom: 10px !important;
+}
+
+.title {
+  color: t.$color-text-primary;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

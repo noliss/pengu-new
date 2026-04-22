@@ -1,2 +1,0 @@
-export { SvgSlider } from './SvgSlider';
-
