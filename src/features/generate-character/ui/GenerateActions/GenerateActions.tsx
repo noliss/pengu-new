@@ -2,15 +2,11 @@ import { useCallback, useState } from 'react';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import Dialog from '@mui/material/Dialog';
+import Typography from '@mui/material/Typography';
 import UndoIcon from '@mui/icons-material/Undo';
 import CasinoIcon from '@mui/icons-material/Casino';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import SettingsIcon from '@mui/icons-material/Settings';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import {
   selectCanUndo,
@@ -38,8 +34,8 @@ export const GenerateActions = ({ partIds, svgIds, colors, onGenerate }: Generat
   const name = useAppSelector(selectCharacterName);
   const type = useAppSelector(selectGenerationType);
   const canUndo = useAppSelector(selectCanUndo);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [moreAnchor, setMoreAnchor] = useState<HTMLElement | null>(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const handleUndo = useCallback(() => dispatch(undoDraft()), [dispatch]);
   const handleRandom = useCallback(
@@ -47,30 +43,25 @@ export const GenerateActions = ({ partIds, svgIds, colors, onGenerate }: Generat
     [dispatch, partIds, svgIds, colors],
   );
 
-  const openMore = useCallback(
-    (e: React.MouseEvent<HTMLElement>) => setMoreAnchor(e.currentTarget),
-    [],
-  );
-  const closeMore = useCallback(() => setMoreAnchor(null), []);
-
-  const handleReset = useCallback(() => {
+  // Диалог подтверждения удаления: ресет драфта — деструктивное действие,
+  const openDelete = useCallback(() => setIsDeleteOpen(true), []);
+  const closeDelete = useCallback(() => setIsDeleteOpen(false), []);
+  const handleConfirmDelete = useCallback(() => {
     dispatch(resetDraft());
-    setMoreAnchor(null);
+    setIsDeleteOpen(false);
   }, [dispatch]);
 
-  const openSettings = useCallback(() => {
-    setMoreAnchor(null);
-    setIsSettingsOpen(true);
-  }, []);
-  const closeSettings = useCallback(() => setIsSettingsOpen(false), []);
 
-  const handleSave = useCallback(
+  const openCreate = useCallback(() => setIsCreateOpen(true), []);
+  const closeCreate = useCallback(() => setIsCreateOpen(false), []);
+  const handleCreate = useCallback(
     (newName: string, newType: GenerationType) => {
       dispatch(setCharacterName(newName));
       dispatch(setGenerationType(newType));
-      setIsSettingsOpen(false);
+      setIsCreateOpen(false);
+      onGenerate?.();
     },
-    [dispatch],
+    [dispatch, onGenerate],
   );
 
   return (
@@ -93,47 +84,57 @@ export const GenerateActions = ({ partIds, svgIds, colors, onGenerate }: Generat
         </IconButton>
         <IconButton
           className={styles.iconButton}
-          onClick={openMore}
-          aria-label="Ещё"
-          aria-haspopup="menu"
-          aria-expanded={Boolean(moreAnchor)}
+          onClick={openDelete}
+          aria-label="Удалить персонажа"
         >
-          <MoreHorizIcon />
+          <DeleteOutlineIcon />
         </IconButton>
 
-        <Button className={styles.generateButton} onClick={onGenerate}>
+        <Button className={styles.generateButton} onClick={openCreate}>
           Generate
         </Button>
       </Box>
 
-      <Menu
-        anchorEl={moreAnchor}
-        open={Boolean(moreAnchor)}
-        onClose={closeMore}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        slotProps={{ paper: { className: styles.menuPaper } }}
+      <Dialog
+        open={isDeleteOpen}
+        onClose={closeDelete}
+        slotProps={{
+          paper: {
+            variant: 'glass',
+            className: styles.deletePaper,
+          },
+        }}
+        aria-labelledby="delete-character-title"
       >
-        <MenuItem onClick={handleReset} className={styles.menuItem}>
-          <ListItemIcon className={styles.menuIcon}>
-            <RefreshIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Сбросить</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={openSettings} className={styles.menuItem}>
-          <ListItemIcon className={styles.menuIcon}>
-            <SettingsIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Настройки</ListItemText>
-        </MenuItem>
-      </Menu>
+        <Box className={styles.deleteBody}>
+          <Typography id="delete-character-title" className={styles.deleteTitle}>
+            Удалить персонажа?
+          </Typography>
+          <Typography className={styles.deleteText}>
+            Это безвозвратное действие. Все выбранные части, цвета и история
+            изменений будут удалены.
+          </Typography>
+          <Box className={styles.deleteActions}>
+            <Button onClick={closeDelete} variant="glass" className={styles.deleteCancel}>
+              Отмена
+            </Button>
+            <Button
+              onClick={handleConfirmDelete}
+              variant="glassPrimary"
+              className={styles.deleteConfirm}
+            >
+              Удалить
+            </Button>
+          </Box>
+        </Box>
+      </Dialog>
 
       <GenerateSettingsDialog
-        open={isSettingsOpen}
-        onClose={closeSettings}
+        open={isCreateOpen}
+        onClose={closeCreate}
         characterName={name}
         generationType={type}
-        onSave={handleSave}
+        onSave={handleCreate}
       />
     </>
   );

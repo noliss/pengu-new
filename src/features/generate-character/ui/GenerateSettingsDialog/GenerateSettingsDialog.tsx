@@ -47,7 +47,7 @@ const SettingsForm = ({
   return (
     <Box className={styles.body}>
       <Typography variant="h6" className={styles.title}>
-        Настройки
+        Создать персонажа
       </Typography>
 
       <TextField
@@ -81,7 +81,7 @@ const SettingsForm = ({
             Отмена
           </Button>
           <Button onClick={handleSave} variant="glassPrimary">
-            Сохранить
+            Создать
           </Button>
         </Box>
       </Box>
