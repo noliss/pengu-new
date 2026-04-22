@@ -1,5 +1,7 @@
 {
   "url": "https://noliq.github.io/pengu-new",
-  "name": "Pengu React App",
-  "iconUrl": "https://noliq.github.io/pengu-new/icon.svg"
+  "name": "Pengu",
+  "iconUrl": "https://noliq.github.io/pengu-new/icon.png",
+  "termsOfUseUrl": "https://noliq.github.io/pengu-new/terms",
+  "privacyPolicyUrl": "https://noliq.github.io/pengu-new/privacy"
 }
