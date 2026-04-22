@@ -1,0 +1,66 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.embla {
+  overflow: hidden;
+  flex: 1;
+  cursor: grab;
+  
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.emblaContainer {
+  display: flex;
+  gap: 8px;
+  padding: 1px;
+  user-select: none;
+}
+
+.arrowLeft,
+.arrowRight {
+  position: absolute;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.15);
+  pointer-events: none;
+  z-index: 1;
+  user-select: none;
+  transition: opacity 0.2s ease;
+}
+
+.arrowLeft {
+  left: 0;
+}
+
+.arrowRight {
+  right: 0;
+}
+
+.block {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  font-size: 14px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  
+  &.selected {
+    background: white;
+    color: #0a0a0a;
+    border-color: white;
+  }
+}
+

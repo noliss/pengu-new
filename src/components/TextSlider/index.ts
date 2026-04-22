@@ -1,0 +1,2 @@
+export { TextSlider } from './TextSlider';
+

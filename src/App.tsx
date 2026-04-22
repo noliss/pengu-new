@@ -18,11 +18,9 @@ const App = () => {
   }, [launchParams, dispatch]);
 
   return (
-    <div>
       <HashRouter>
         <AppRoutes />
       </HashRouter>
-    </div>
   );
 };
 
