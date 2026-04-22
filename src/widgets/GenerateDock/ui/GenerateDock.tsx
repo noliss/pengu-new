@@ -114,12 +114,14 @@ export const GenerateDock = ({ onGenerate }: GenerateDockProps) => {
         </Box>
       </Collapse>
 
-      <GenerateActions
-        partIds={partIds}
-        svgIds={svgIds}
-        colors={DEFAULT_COLORS}
-        onGenerate={onGenerate}
-      />
+      <Box className={styles.actions}>
+        <GenerateActions
+          partIds={partIds}
+          svgIds={svgIds}
+          colors={DEFAULT_COLORS}
+          onGenerate={onGenerate}
+        />
+      </Box>
     </Box>
   );
 };

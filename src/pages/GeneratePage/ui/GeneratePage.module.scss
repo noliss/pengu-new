@@ -1,19 +1,33 @@
 @use '@shared/styles/tokens' as t;
 
-// Layout сам добавляет padding-bottom под BottomNav (~56px)
-
+// Content занимает всю рабочую высоту Layout'а (после safe-area и BottomNav).
+// Stage (1fr) всегда тянется, съедая всё свободное место. Dock (auto) берёт
+// ровно столько, сколько нужно его содержимому, включая раскрытый редактор —
+// так между пингвином и чипсами частей тела нет "мёртвой зоны", а при открытии
+// редактора пингвин плавно сжимается, освобождая место.
 .content {
+  // --available-height задаёт Layout: 100dvh минус BottomNav и top-safe-area.
+  // Fallback на случай, если страница открыта вне Layout.
+  width: 100%;
+  max-width: 100%;
+  height: var(--available-height, calc(100dvh - 56px));
   padding: 15px;
-  min-height: calc(100vh - 56px);
-  display: flex;
-  flex-direction: column;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  // minmax(0, 1fr): ключевой фикс — без этого track берёт max-content
+  // (intrinsic ~1000px у Lottie-svg) и распирает всю сетку.
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
+  overflow: hidden;
 }
 
 .stage {
   position: relative;
-  flex: 1;
-  min-height: 200px;
+  // min-width/height: 0 перебивают дефолтный min-width: auto у grid/flex items,
+  // иначе intrinsic размер контента (Lottie) расширит track за пределы экрана.
+  min-width: 0;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,17 +54,42 @@
   z-index: 0;
 }
 
+// "Рамка" пингвина: квадрат, вписанный по меньшей стороне сцены. Lottie
+// внутри масштабируется по aspect ratio и не распирает контейнер по ширине.
 .stageInner {
   position: relative;
   z-index: 1;
+  // Явный запрет flex-item'у расти по intrinsic-width лотти-контента.
+  flex: 0 1 auto;
+  min-width: 0;
+  min-height: 0;
   width: 100%;
-  max-width: 320px;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+
+  // Лоттишный wrapper и сам svg — жёстко ограничены рамкой stageInner.
+  > * {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  svg {
+    max-width: 100%;
+    max-height: 100%;
+  }
 }
 
-// мягкая "тень под ногами" — добавляет заземлённости
+// мягкая "тень под ногами"
 .stageShadow {
   position: absolute;
   left: 50%;
