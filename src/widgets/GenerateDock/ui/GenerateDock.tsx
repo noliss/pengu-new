@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import { CardSlider } from '@shared/ui';
@@ -37,7 +37,6 @@ export const GenerateDock = ({ onGenerate }: GenerateDockProps) => {
   const dispatch = useAppDispatch();
   const activePartId = useAppSelector(selectActivePartId);
   const selections = useAppSelector(selectCharacterSelections);
-  const [editorOpen, setEditorOpen] = useState(false);
 
   const partIds = useMemo(() => MOCK_CHARACTER_PARTS.map((p) => p.id), []);
   const svgIds = useMemo(() => svgItems.map((s) => s.id), []);
@@ -46,15 +45,14 @@ export const GenerateDock = ({ onGenerate }: GenerateDockProps) => {
   const selectedSvgId = activeSelection?.svgId ?? null;
   const selectedColor = activeSelection?.color ?? null;
 
+  // Видимость редактора — чистое производное от activePartId в сторе.
+  // Любое программное изменение активной части (выбор chip'а, Random, undo,
+  // восстановление из persist) автоматически синхронизируется с UI.
+  const editorVisible = Boolean(activePartId);
+
   const handlePartSelect = useCallback(
     (id: string | null) => {
-      // Повторный тап по активной части (CardSlider присылает null) — схлопываем редактор.
-      if (id === null) {
-        setEditorOpen(false);
-        return;
-      }
       dispatch(setActivePartId(id));
-      setEditorOpen(true);
     },
     [dispatch],
   );
@@ -80,8 +78,6 @@ export const GenerateDock = ({ onGenerate }: GenerateDockProps) => {
     },
     [dispatch, activePartId, selectedSvgId],
   );
-
-  const editorVisible = editorOpen && Boolean(activePartId);
 
   return (
     <Box className={styles.dock} role="region" aria-label="Панель генерации персонажа">
