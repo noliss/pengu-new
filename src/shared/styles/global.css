@@ -28,6 +28,19 @@ body {
 * {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
+  /* Firefox */
+  scrollbar-width: none;
+  /* IE/Edge legacy */
+  -ms-overflow-style: none;
+}
+
+/* WebKit/Blink (Chrome, Safari, Edge, TMA webviews) — полностью прячем
+   полоску прокрутки. Скролл как механика остаётся; ширина скроллбара = 0,
+   поэтому страницы с/без скролла не "прыгают" между собой. */
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 button,
