@@ -216,25 +216,11 @@
 }
 
 // --- Диалог подтверждения удаления ---
-// Каркас sheet'а — в shared/ui/BottomSheet, здесь только текстовое тело и
-// деструктивный оттенок для кнопки "Удалить".
+// Каркас sheet'а — в shared/ui/BottomSheet, здесь — только текст.
+// Кнопка «Удалить» — variant="glassDestructive" в MUI-теме.
 .deleteText {
   font-size: 13px !important;
   line-height: 1.45 !important;
   color: t.$color-text-secondary;
   text-align: center;
-}
-
-// "Удалить" — единственная деструктивная кнопка в экране; подсвечиваем её
-// лёгким красным оттенком поверх glassPrimary-варианта из темы.
-.deleteConfirm {
-  background: linear-gradient(135deg, #ff3b5c 0%, #ff2ec4 100%) !important;
-  color: #fff !important;
-  border: 1px solid rgba(255, 180, 210, 0.35) !important;
-  box-shadow: 0 6px 20px rgba(255, 59, 92, 0.42) !important;
-
-  &:hover {
-    background: linear-gradient(135deg, #ff5974 0%, #ff2ec4 100%) !important;
-    box-shadow: 0 8px 26px rgba(255, 59, 92, 0.55) !important;
-  }
 }

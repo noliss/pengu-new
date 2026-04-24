@@ -120,11 +120,7 @@ export const GenerateActions = ({ partIds, svgIds, colors, onGenerate }: Generat
             <Button onClick={closeDelete} variant="glass">
               Отмена
             </Button>
-            <Button
-              onClick={handleConfirmDelete}
-              variant="glassPrimary"
-              className={styles.deleteConfirm}
-            >
+            <Button onClick={handleConfirmDelete} variant="glassDestructive">
               Удалить
             </Button>
           </>

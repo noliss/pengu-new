@@ -11,6 +11,8 @@ declare module '@mui/material/Button' {
   interface ButtonPropsVariantOverrides {
     glass: true;
     glassPrimary: true;
+    /** Деструктивные действия: удаление, сброс, стирание. Не путать с `glassPrimary`. */
+    glassDestructive: true;
   }
 }
 
@@ -143,6 +145,31 @@ export const createAppTheme = (): Theme =>
                 background: `linear-gradient(135deg, ${palette.accentStrong} 0%, ${palette.accentSecondary} 100%)`,
                 borderColor: palette.glassBorderStrong,
                 boxShadow: shadows.accentGlowStrong,
+              },
+            },
+          },
+          {
+            props: { variant: 'glassDestructive' },
+            style: {
+              // Только красный спектр — без магенты, иначе на короткой кнопке
+              // визуально сливается с glassPrimary (cyan→magenta).
+              background:
+                'linear-gradient(145deg, #b80028 0%, #ff3b5c 42%, #ff7a8a 100%)',
+              border: '1px solid rgba(255, 130, 145, 0.55)',
+              color: '#ffffff',
+              borderRadius: radii.md,
+              padding: '6px 14px',
+              fontSize: '12px',
+              fontWeight: 700,
+              minWidth: 70,
+              boxShadow:
+                '0 4px 18px rgba(255, 25, 45, 0.5), 0 0 32px rgba(255, 40, 55, 0.22)',
+              '&:hover': {
+                background:
+                  'linear-gradient(145deg, #d9002e 0%, #ff5a72 45%, #ffb0b8 100%)',
+                borderColor: 'rgba(255, 180, 190, 0.7)',
+                boxShadow:
+                  '0 6px 28px rgba(255, 35, 55, 0.6), 0 0 44px rgba(255, 50, 65, 0.3)',
               },
             },
           },
