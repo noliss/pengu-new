@@ -90,7 +90,22 @@ export const GenerateActions = ({ partIds, svgIds, colors, onGenerate }: Generat
           <DeleteOutlineIcon />
         </IconButton>
 
-        <Button className={styles.generateButton} onClick={openCreate}>
+        <Button
+          className={styles.generateButton}
+          onClick={openCreate}
+          disableRipple
+        >
+          <span className={styles.glow} aria-hidden />
+          <span className={styles.bgFill} aria-hidden />
+          <span className={styles.sparkle} aria-hidden>
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M10 2l1.2 5.5L17 9l-5.8 1.5L10 16l-1.2-5.5L3 9l5.8-1.5z" />
+              <path
+                d="M5 2l.5 2L8 5l-2.5.5L5 8l-.5-2.5L2 5l2.5-.5z"
+                opacity=".7"
+              />
+            </svg>
+          </span>
           Generate
         </Button>
       </Box>

@@ -51,12 +51,12 @@
 .popoverPaper {
   margin-top: -8px;
   padding: 6px;
-  background: rgba(18, 18, 22, 0.92);
+  background: rgba(6, 7, 12, 0.94);
   backdrop-filter: t.$blur-lg;
   -webkit-backdrop-filter: t.$blur-lg;
   border: 1px solid t.$color-glass-border-soft;
   border-radius: 999px;
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.75);
   overflow: visible;
 }
 
@@ -114,13 +114,13 @@
 }
 
 .sheetPaper {
-  background: rgba(16, 16, 20, 0.94) !important;
+  background: rgba(6, 7, 12, 0.95) !important;
   backdrop-filter: t.$blur-lg;
   -webkit-backdrop-filter: t.$blur-lg;
   border-top: 1px solid t.$color-glass-border-soft;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  box-shadow: 0 -10px 32px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 -10px 32px rgba(0, 0, 0, 0.75);
   overflow: visible;
 }
 

@@ -35,7 +35,13 @@ export const createAppTheme = (): Theme =>
       },
       primary: {
         main: palette.accent,
+        light: palette.accentStrong,
+        dark: palette.accentDeep,
         contrastText: palette.bg,
+      },
+      secondary: {
+        main: palette.accentSecondary,
+        contrastText: palette.textPrimary,
       },
       error: {
         main: palette.danger,
@@ -124,17 +130,19 @@ export const createAppTheme = (): Theme =>
           {
             props: { variant: 'glassPrimary' },
             style: {
-              background: palette.glassBgStrong,
-              border: `1px solid ${palette.glassBorderSoft}`,
-              color: palette.textPrimary,
+              background: `linear-gradient(135deg, ${palette.accent} 0%, ${palette.accentSecondary} 100%)`,
+              border: `1px solid ${palette.glassBorder}`,
+              color: palette.bg,
               borderRadius: radii.md,
               padding: '6px 14px',
               fontSize: '12px',
-              fontWeight: 500,
+              fontWeight: 700,
               minWidth: 70,
+              boxShadow: shadows.accentGlow,
               '&:hover': {
-                background: 'rgba(255, 255, 255, 0.25)',
-                borderColor: palette.glassBorder,
+                background: `linear-gradient(135deg, ${palette.accentStrong} 0%, ${palette.accentSecondary} 100%)`,
+                borderColor: palette.glassBorderStrong,
+                boxShadow: shadows.accentGlowStrong,
               },
             },
           },

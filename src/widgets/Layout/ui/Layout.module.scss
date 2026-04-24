@@ -33,12 +33,16 @@
     right: 0;
     bottom: 0;
     border-radius: 40px 40px 0 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(200, 210, 255, 0.1) 0%,
+      rgba(200, 210, 255, 0.04) 100%
+    );
     z-index: -1;
   }
 
   :global(.MuiBottomNavigationAction-root) {
-    color: rgba(255, 255, 255, 0.8);
+    color: t.$color-text-secondary;
     min-width: auto;
     padding: 8px 12px;
     transition: t.$transition-base;
@@ -53,13 +57,13 @@
     }
 
     &:hover {
-      color: white;
+      color: t.$color-text-primary;
       background: t.$color-glass-bg;
     }
 
     &.Mui-selected {
-      color: white;
-      background: t.$color-glass-bg-strong;
+      color: t.$color-accent;
+      background: t.$color-accent-soft;
       box-shadow: t.$shadow-card;
     }
   }

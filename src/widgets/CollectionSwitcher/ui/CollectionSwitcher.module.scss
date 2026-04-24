@@ -1,8 +1,5 @@
 @use '@shared/styles/tokens' as t;
 
-// Стеклянная пилюля с названием коллекции и стрелками по бокам. Занимает
-// 100% доступной ширины, высота фиксированная и компактная — около 10%
-// от available-height на мобиле.
 .root {
   display: flex;
   align-items: center;
@@ -19,7 +16,6 @@
   -webkit-backdrop-filter: t.$blur-sm;
   box-shadow: t.$shadow-soft;
   // Стрелки и свайп на превью — самостоятельные управляющие элементы;
-  // системный текст-селект/контекстное меню тут не нужны.
   user-select: none;
   -webkit-user-select: none;
   touch-action: pan-y;
@@ -29,19 +25,17 @@
   width: 32px !important;
   height: 32px !important;
   padding: 0 !important;
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: t.$color-text-secondary !important;
   transition: background 0.18s ease, color 0.18s ease, opacity 0.18s ease;
 
   &:hover:not(:disabled),
   &:active:not(:disabled) {
-    background: rgba(255, 255, 255, 0.08) !important;
-    color: #fff !important;
+    background: t.$color-accent-soft !important;
+    color: t.$color-accent !important;
   }
 
   &:disabled {
-    color: rgba(255, 255, 255, 0.25) !important;
-    // Убираем "мёртвый" элемент из потока взаимодействия визуально, но
-    // оставляем в DOM для симметрии и сохранения aria-позиции.
+    color: t.$color-text-muted !important;
     opacity: 0.6;
   }
 
@@ -50,8 +44,6 @@
   }
 }
 
-// Контейнер названия — единственная "сцена" для анимации. Высота фикс.,
-// overflow скрывает уходящий/приходящий текст по краям.
 .titleWrap {
   position: relative;
   flex: 1;

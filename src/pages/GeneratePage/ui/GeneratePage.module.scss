@@ -33,7 +33,7 @@
   justify-content: center;
   padding: 24px;
   border-radius: t.$radius-xl;
-  background: t.$color-glass-bg-soft;
+  background: t.$color-glass-bg;
   border: 1px solid t.$color-glass-border-soft;
   backdrop-filter: t.$blur-sm;
   box-shadow: t.$shadow-card;
@@ -44,18 +44,35 @@
 .stageGlow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    ellipse at 50% 35%,
-    rgba(255, 255, 255, 0.12) 0%,
-    rgba(255, 255, 255, 0.04) 35%,
-    transparent 65%
-  );
+  background:
+    radial-gradient(
+      ellipse at 50% 55%,
+      rgba(0, 229, 255, 0.22) 0%,
+      rgba(0, 229, 255, 0.07) 40%,
+      transparent 72%
+    ),
+    // Верхние "рефлексы" (cyan слева, magenta справа).
+    radial-gradient(
+      ellipse at 25% 18%,
+      rgba(0, 229, 255, 0.22) 0%,
+      rgba(0, 229, 255, 0.05) 38%,
+      transparent 68%
+    ),
+    radial-gradient(
+      ellipse at 75% 18%,
+      rgba(255, 46, 196, 0.18) 0%,
+      transparent 58%
+    ),
+    // Нижняя cyan "подсветка пола".
+    radial-gradient(
+      ellipse at 50% 102%,
+      rgba(0, 229, 255, 0.22) 0%,
+      transparent 62%
+    );
   pointer-events: none;
   z-index: 0;
 }
 
-// "Рамка" пингвина: квадрат, вписанный по меньшей стороне сцены. Lottie
-// внутри масштабируется по aspect ratio и не распирает контейнер по ширине.
 .stageInner {
   position: relative;
   z-index: 1;
