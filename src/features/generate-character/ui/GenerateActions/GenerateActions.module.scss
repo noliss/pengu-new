@@ -216,29 +216,8 @@
 }
 
 // --- Диалог подтверждения удаления ---
-// По стилю — мягкая стеклянная карточка с ограниченной шириной, чтобы на мобиле
-// не растягивалась на весь экран, но и не выглядела крошечной на десктопе.
-.deletePaper {
-  margin: 16px !important;
-  width: 100% !important;
-  max-width: 340px !important;
-  border-radius: t.$radius-xl !important;
-}
-
-.deleteBody {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 20px 20px 16px;
-}
-
-.deleteTitle {
-  font-size: 16px !important;
-  font-weight: 600 !important;
-  text-align: center;
-  color: t.$color-text-primary;
-}
-
+// Каркас sheet'а — в shared/ui/BottomSheet, здесь только текстовое тело и
+// деструктивный оттенок для кнопки "Удалить".
 .deleteText {
   font-size: 13px !important;
   line-height: 1.45 !important;
@@ -246,20 +225,9 @@
   text-align: center;
 }
 
-.deleteActions {
-  display: flex;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.deleteCancel {
-  flex: 1;
-}
-
 // "Удалить" — единственная деструктивная кнопка в экране; подсвечиваем её
 // лёгким красным оттенком поверх glassPrimary-варианта из темы.
 .deleteConfirm {
-  flex: 1;
   background: linear-gradient(135deg, #ff3b5c 0%, #ff2ec4 100%) !important;
   color: #fff !important;
   border: 1px solid rgba(255, 180, 210, 0.35) !important;

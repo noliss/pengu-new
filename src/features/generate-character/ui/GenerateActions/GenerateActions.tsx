@@ -2,12 +2,12 @@ import { useCallback, useState } from 'react';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
 import Typography from '@mui/material/Typography';
 import UndoIcon from '@mui/icons-material/Undo';
 import CasinoIcon from '@mui/icons-material/Casino';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useAppDispatch, useAppSelector } from '@shared/store';
+import { BottomSheet } from '@shared/ui';
 import {
   selectCanUndo,
   selectCharacterName,
@@ -110,27 +110,14 @@ export const GenerateActions = ({ partIds, svgIds, colors, onGenerate }: Generat
         </Button>
       </Box>
 
-      <Dialog
+      <BottomSheet
         open={isDeleteOpen}
         onClose={closeDelete}
-        slotProps={{
-          paper: {
-            variant: 'glass',
-            className: styles.deletePaper,
-          },
-        }}
-        aria-labelledby="delete-character-title"
-      >
-        <Box className={styles.deleteBody}>
-          <Typography id="delete-character-title" className={styles.deleteTitle}>
-            Удалить персонажа?
-          </Typography>
-          <Typography className={styles.deleteText}>
-            Это безвозвратное действие. Все выбранные части, цвета и история
-            изменений будут удалены.
-          </Typography>
-          <Box className={styles.deleteActions}>
-            <Button onClick={closeDelete} variant="glass" className={styles.deleteCancel}>
+        title="Удалить персонажа?"
+        titleId="delete-character-title"
+        actions={
+          <>
+            <Button onClick={closeDelete} variant="glass">
               Отмена
             </Button>
             <Button
@@ -140,9 +127,14 @@ export const GenerateActions = ({ partIds, svgIds, colors, onGenerate }: Generat
             >
               Удалить
             </Button>
-          </Box>
-        </Box>
-      </Dialog>
+          </>
+        }
+      >
+        <Typography className={styles.deleteText}>
+          Это безвозвратное действие. Все выбранные части, цвета и история
+          изменений будут удалены.
+        </Typography>
+      </BottomSheet>
 
       <GenerateSettingsDialog
         open={isCreateOpen}

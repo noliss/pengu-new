@@ -1,6 +1,5 @@
+export * from './BottomSheet';
 export * from './CardSlider';
-export * from './ColorPalette';
-export * from './ColorPicker';
 export * from './ErrorBoundary';
 export * from './Loader';
 export * from './LottieAnimation';

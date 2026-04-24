@@ -28,10 +28,8 @@ export const palette = {
   accent: '#00e5ff',
   accentStrong: '#22eeff',
   accentDeep: '#0099b8',
-  accentSoft: 'rgba(0, 229, 255, 0.16)',
 
   accentSecondary: '#ff2ec4',
-  accentSecondarySoft: 'rgba(255, 46, 196, 0.16)',
 
   danger: '#ff3b5c',
   success: '#3df5d3',
@@ -65,12 +63,6 @@ export const blurs = {
 export const transitions = {
   base: 'all 0.3s ease',
   fast: 'all 0.2s ease',
-} as const;
-
-export const zIndex = {
-  bottomNav: 1000,
-  floatingPanel: 999,
-  dialog: 1300,
 } as const;
 
 export type Palette = typeof palette;

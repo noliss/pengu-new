@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { HexColorPicker } from 'react-colorful';
 import Popover from '@mui/material/Popover';
-import Drawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
@@ -10,6 +9,7 @@ import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import cn from 'classnames';
+import { BottomSheet } from '@shared/ui/BottomSheet/BottomSheet';
 import styles from './ColorPickerButton.module.scss';
 
 const HEX_REGEX = /^#([0-9a-fA-F]{6})$/;
@@ -45,7 +45,7 @@ export const ColorPickerButton = ({
   onColorSelect,
   disabled,
 }: ColorPickerButtonProps) => {
-  const anchorRef = useRef<HTMLButtonElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -97,12 +97,16 @@ export const ColorPickerButton = ({
   );
 
   // При открытии sheet'а синхронизируем локальные состояния с актуальным выбором.
-  useEffect(() => {
+  // Делаем во время рендера (паттерн "Adjust state while rendering"), чтобы не
+  // плодить cascading render'ы из useEffect.
+  const [prevSheetOpen, setPrevSheetOpen] = useState(sheetOpen);
+  if (sheetOpen !== prevSheetOpen) {
+    setPrevSheetOpen(sheetOpen);
     if (sheetOpen) {
       setLiveColor(pickerValue);
       setHexInput(pickerValue.toUpperCase());
     }
-  }, [sheetOpen, pickerValue]);
+  }
 
   // На unmount очищаем таймер и применяем последнее значение, чтобы не потерять.
   useEffect(() => {
@@ -169,7 +173,7 @@ export const ColorPickerButton = ({
   return (
     <>
       <button
-        ref={anchorRef}
+        ref={setAnchorEl}
         type="button"
         className={cn(styles.trigger, {
           [styles.empty]: !selectedColor,
@@ -187,7 +191,7 @@ export const ColorPickerButton = ({
 
       <Popover
         open={popoverOpen}
-        anchorEl={anchorRef.current}
+        anchorEl={anchorEl}
         onClose={closePopover}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
@@ -228,57 +232,53 @@ export const ColorPickerButton = ({
         </Box>
       </Popover>
 
-      <Drawer
-        anchor="bottom"
+      <BottomSheet
         open={sheetOpen}
         onClose={closeSheet}
-        slotProps={{
-          paper: { className: styles.sheetPaper, elevation: 0 },
-          backdrop: { className: styles.sheetBackdrop },
-        }}
-      >
-        <Box className={styles.sheet} role="dialog" aria-label="Свой цвет">
-          <Box className={styles.sheetGrip} aria-hidden />
-          <Box className={styles.pickerWrapper}>
-            <HexColorPicker color={liveColor} onChange={handlePickerChange} />
-          </Box>
-
-          <Box className={styles.hexField}>
-            <Box
-              className={styles.hexSwatch}
-              style={{ backgroundColor: liveColor }}
-              aria-hidden
-            />
-            <input
-              type="text"
-              className={styles.hexInput}
-              value={hexInput}
-              onChange={handleHexChange}
-              spellCheck={false}
-              autoComplete="off"
-              maxLength={7}
-              aria-label="HEX-код цвета"
-            />
-            <IconButton
-              size="small"
-              className={styles.hexCopy}
-              onClick={handleCopy}
-              aria-label={copied ? 'Скопировано' : 'Скопировать'}
-            >
-              {copied ? <CheckIcon fontSize="small" /> : <ContentCopyIcon fontSize="small" />}
-            </IconButton>
-          </Box>
-
+        // Backdrop прозрачный: sheet полупрозрачный, хочется видеть пингвина
+        // позади, чтобы на лету оценивать выбранный цвет.
+        backdrop="transparent"
+        bodyClassName={styles.compactBody}
+        actions={
           <Button
             className={styles.sheetDone}
             onClick={closeSheet}
-            fullWidth
             variant="text"
           >
-            Готово
+            Закрыть
           </Button>
+        }
+      >
+        <Box className={styles.pickerWrapper}>
+          <HexColorPicker color={liveColor} onChange={handlePickerChange} />
         </Box>
-      </Drawer>
+
+        <Box className={styles.hexField}>
+          <Box
+            className={styles.hexSwatch}
+            style={{ backgroundColor: liveColor }}
+            aria-hidden
+          />
+          <input
+            type="text"
+            className={styles.hexInput}
+            value={hexInput}
+            onChange={handleHexChange}
+            spellCheck={false}
+            autoComplete="off"
+            maxLength={7}
+            aria-label="HEX-код цвета"
+          />
+          <IconButton
+            size="small"
+            className={styles.hexCopy}
+            onClick={handleCopy}
+            aria-label={copied ? 'Скопировано' : 'Скопировать'}
+          >
+            {copied ? <CheckIcon fontSize="small" /> : <ContentCopyIcon fontSize="small" />}
+          </IconButton>
+        </Box>
+      </BottomSheet>
     </>
   );
 };

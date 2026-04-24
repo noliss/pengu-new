@@ -1,12 +1,11 @@
 import { useCallback, useState } from 'react';
-import Dialog from '@mui/material/Dialog';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import Slide from '@mui/material/Slide';
+import { BottomSheet } from '@shared/ui';
 import type { GenerationType } from '@entities/character';
 import styles from './GenerateSettingsDialog.module.scss';
 
@@ -18,12 +17,10 @@ interface GenerateSettingsDialogProps {
   onSave?: (characterName: string, generationType: GenerationType) => void;
 }
 
-const Transition = (props: { children: React.ReactElement }) => <Slide direction="up" {...props} />;
-
 /**
- * Внутренняя форма с state — монтируется заново при каждом открытии диалога
- * (diplom: keepMounted={false} у Dialog + компонент условно рендерится),
- * поэтому initial-значения подтягиваются через useState без useEffect.
+ * Форма с внутренним состоянием — монтируется только при открытии BottomSheet'а
+ * (keepMounted={false}), поэтому initial-значения можно безопасно подтягивать
+ * в useState без useEffect.
  */
 const SettingsForm = ({
   initialName,
@@ -45,11 +42,7 @@ const SettingsForm = ({
   }, [name, type, onSave, onClose]);
 
   return (
-    <Box className={styles.body}>
-      <Typography variant="h6" className={styles.title}>
-        Создать персонажа
-      </Typography>
-
+    <>
       <TextField
         label="Название персонажа"
         value={name}
@@ -60,7 +53,7 @@ const SettingsForm = ({
         className={styles.textField}
       />
 
-      <Box className={styles.row}>
+      <Box className={styles.typeRow}>
         <FormControlLabel
           control={
             <Switch
@@ -73,19 +66,19 @@ const SettingsForm = ({
               {type === 'emoji' ? 'Эмодзи' : 'Стикер'}
             </Typography>
           }
-          sx={{ margin: 0, flex: 1 }}
+          sx={{ margin: 0 }}
         />
-
-        <Box className={styles.actions}>
-          <Button onClick={onClose} variant="glass">
-            Отмена
-          </Button>
-          <Button onClick={handleSave} variant="glassPrimary">
-            Создать
-          </Button>
-        </Box>
       </Box>
-    </Box>
+
+      <Box className={styles.actions}>
+        <Button onClick={onClose} variant="glass">
+          Отмена
+        </Button>
+        <Button onClick={handleSave} variant="glassPrimary">
+          Создать
+        </Button>
+      </Box>
+    </>
   );
 };
 
@@ -96,37 +89,12 @@ export const GenerateSettingsDialog = ({
   generationType = 'sticker',
   onSave,
 }: GenerateSettingsDialogProps) => (
-  <Dialog
-    open={open}
-    onClose={onClose}
-    TransitionComponent={Transition}
-    fullWidth
-    maxWidth={false}
-    keepMounted={false}
-    slotProps={{
-      paper: {
-        variant: 'glassBottom',
-        sx: {
-          m: 0,
-          p: 0,
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          width: '100vw',
-          maxWidth: '100vw',
-          boxSizing: 'border-box',
-        },
-      },
-    }}
-  >
-    {open && (
-      <SettingsForm
-        initialName={characterName}
-        initialType={generationType}
-        onClose={onClose}
-        onSave={onSave}
-      />
-    )}
-  </Dialog>
+  <BottomSheet open={open} onClose={onClose} title="Создать персонажа">
+    <SettingsForm
+      initialName={characterName}
+      initialType={generationType}
+      onClose={onClose}
+      onSave={onSave}
+    />
+  </BottomSheet>
 );

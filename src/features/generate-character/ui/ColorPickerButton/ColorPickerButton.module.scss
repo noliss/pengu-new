@@ -105,45 +105,13 @@
   }
 }
 
-// --- bottom sheet (Drawer) ---
-
-.sheetBackdrop {
-  background-color: rgba(0, 0, 0, 0.15) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-.sheetPaper {
-  background: rgba(6, 7, 12, 0.95) !important;
-  backdrop-filter: t.$blur-lg;
-  -webkit-backdrop-filter: t.$blur-lg;
-  border-top: 1px solid t.$color-glass-border-soft;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  box-shadow: 0 -10px 32px rgba(0, 0, 0, 0.75);
-  overflow: visible;
-}
-
-.sheet {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  padding: 6px 14px 12px;
-  gap: 8px;
-  max-width: 360px;
-  width: 100%;
-  margin: 0 auto;
-  box-sizing: border-box;
-}
-
-// Маленький handle сверху — намёк на swipe-down и декоративный якорь.
-.sheetGrip {
-  width: 32px;
-  height: 3px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.22);
-  align-self: center;
-  margin-top: 2px;
+// --- bottom sheet ---
+// Каркас (paper/backdrop/body/grip) живёт в shared/ui/BottomSheet;
+// здесь — только содержимое color-picker'а плюс локальное поджатие вертикали
+// (bodyClassName=compactBody), чтобы sheet занимал поменьше экрана.
+.compactBody {
+  padding: 6px 14px 10px !important;
+  gap: 6px !important;
 }
 
 .pickerWrapper {
@@ -151,7 +119,7 @@
 
   :global(.react-colorful) {
     width: 100%;
-    height: 120px;
+    height: 88px;
     border-radius: t.$radius-sm;
     overflow: hidden;
   }
@@ -159,7 +127,7 @@
     border-radius: t.$radius-sm t.$radius-sm 0 0;
   }
   :global(.react-colorful__hue) {
-    height: 10px;
+    height: 8px;
     border-radius: 0 0 t.$radius-sm t.$radius-sm;
   }
   :global(.react-colorful__pointer) {
@@ -171,12 +139,11 @@
 }
 
 // Inline hex-поле: swatch + редактируемый input + кнопка копирования.
-
 .hexField {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 4px 4px 10px;
+  padding: 2px 2px 2px 8px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid t.$color-glass-border-soft;
   border-radius: 999px;
@@ -189,8 +156,8 @@
 }
 
 .hexSwatch {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   flex-shrink: 0;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
@@ -199,14 +166,14 @@
 .hexInput {
   flex: 1;
   min-width: 0;
-  height: 24px;
+  height: 20px;
   padding: 0;
   background: transparent;
   border: none;
   outline: none;
   color: t.$color-text-primary;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 13px;
+  font-size: 12px;
   letter-spacing: 0.4px;
   text-transform: uppercase;
 
@@ -216,8 +183,8 @@
 }
 
 .hexCopy {
-  width: 24px !important;
-  height: 24px !important;
+  width: 22px !important;
+  height: 22px !important;
   padding: 0 !important;
   color: rgba(255, 255, 255, 0.7) !important;
 
@@ -233,7 +200,7 @@
 
 // "Готово" — компактная pill-кнопка в стиле дока. Real-time уже применил цвет,
 .sheetDone {
-  height: 32px;
+  height: 28px;
   border-radius: 999px !important;
   background: rgba(255, 255, 255, 0.08) !important;
   color: t.$color-text-primary !important;
@@ -241,6 +208,8 @@
   font-size: 12px !important;
   letter-spacing: 0.3px;
   text-transform: none !important;
+  padding: 0 12px !important;
+  min-width: 0 !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 
   &:hover {

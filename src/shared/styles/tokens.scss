@@ -19,14 +19,13 @@ $color-glass-border-strong: rgba(190, 230, 255, 0.28);
 $color-overlay: rgba(0, 0, 0, 0.45);
 $color-overlay-strong: rgba(0, 0, 0, 0.68);
 
-// Акценты: cyan (основной) + magenta (вторичный)
-$color-accent: #00e5ff;         // electric cyan
-$color-accent-strong: #22eeff;  // чуть светлее для hover
-$color-accent-deep: #0099b8;    // глубже под градиент
+// Акценты: cyan (основной) + magenta (вторичный).
+// Варианты *-strong / *-deep / *-secondary-soft живут только в MUI-теме
+// (shared/config/theme/tokens.ts), в SCSS пока не востребованы — добавим
+// когда понадобятся.
+$color-accent: #00e5ff; // electric cyan
 $color-accent-soft: rgba(0, 229, 255, 0.16);
-
-$color-accent-secondary: #ff2ec4;      // magenta
-$color-accent-secondary-soft: rgba(255, 46, 196, 0.16);
+$color-accent-secondary: #ff2ec4; // magenta
 
 $color-danger: #ff3b5c;
 $color-success: #3df5d3;
@@ -45,8 +44,6 @@ $shadow-card-hover: 0 8px 30px rgba(0, 0, 0, 0.8);
 $shadow-panel: 0 -8px 32px rgba(0, 0, 0, 0.78);
 $shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.55);
 $shadow-accent-glow: 0 6px 22px rgba(0, 229, 255, 0.5);
-$shadow-accent-glow-strong: 0 8px 28px rgba(0, 229, 255, 0.65),
-  0 4px 20px rgba(255, 46, 196, 0.4);
 
 // Blur
 $blur-sm: blur(5px);

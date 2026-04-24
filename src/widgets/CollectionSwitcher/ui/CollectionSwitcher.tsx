@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -43,31 +43,25 @@ export const CollectionSwitcher = ({
   // и текущее (displayed) названия. Через SWAP_DURATION_MS outgoing удаляется.
   const [displayedTitle, setDisplayedTitle] = useState(title);
   const [outgoingTitle, setOutgoingTitle] = useState<string | null>(null);
-  const timerRef = useRef<number | null>(null);
+  const [prevTitle, setPrevTitle] = useState(title);
 
-  useEffect(() => {
-    if (title === displayedTitle) return;
-
+  // Реакция на смену prop'а — корректируем state прямо в рендере
+  // (React-паттерн "Adjust state while rendering"): это даёт синхронный
+  // swap без cascading render'ов из useEffect.
+  if (title !== prevTitle) {
+    setPrevTitle(title);
     setOutgoingTitle(displayedTitle);
     setDisplayedTitle(title);
+  }
 
-    if (timerRef.current !== null) {
-      window.clearTimeout(timerRef.current);
-    }
-    timerRef.current = window.setTimeout(() => {
-      setOutgoingTitle(null);
-      timerRef.current = null;
-    }, SWAP_DURATION_MS);
-  }, [title, displayedTitle]);
-
-  useEffect(
-    () => () => {
-      if (timerRef.current !== null) {
-        window.clearTimeout(timerRef.current);
-      }
-    },
-    [],
-  );
+  // Завершение анимации — асинхронный эффект: когда появляется outgoing,
+  // ставим таймер, по нему гасим буфер. Отменяем таймер на unmount или
+  // при следующем swap'е (смена outgoingTitle).
+  useEffect(() => {
+    if (outgoingTitle === null) return;
+    const id = window.setTimeout(() => setOutgoingTitle(null), SWAP_DURATION_MS);
+    return () => window.clearTimeout(id);
+  }, [outgoingTitle]);
 
   // Свайп по самой пилюле переключателя: влево — вперёд, вправо — назад.
   // Стрелки и свайп работают от одних и тех же callback'ов, поэтому граница
