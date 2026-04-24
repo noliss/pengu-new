@@ -1,13 +1,6 @@
 @use '@shared/styles/tokens' as t;
 
-// Content занимает всю рабочую высоту Layout'а (после safe-area и BottomNav).
-// Строки: [switcher auto] [stage 1fr] [dock auto]. Переключатель коллекции —
-// компактный, dock берёт столько, сколько нужно (включая раскрытый редактор),
-// stage съедает всё свободное — так между пингвином и dock'ом нет "мёртвой
-// зоны", а открытие редактора плавно сжимает превью.
 .content {
-  // --available-height задаёт Layout: 100dvh минус BottomNav и top-safe-area.
-  // Fallback на случай, если страница открыта вне Layout.
   width: 100%;
   max-width: 100%;
   height: var(--available-height, calc(100dvh - 56px));

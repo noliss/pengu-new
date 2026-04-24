@@ -41,12 +41,12 @@ export const Layout = () => {
     <Box className={cn(styles.container, { [styles.mobile]: isMobile })}>
       <Outlet />
 
-      <BottomNavigation value={activeIndex} className={styles.bottomNav} showLabels>
+      <BottomNavigation value={activeIndex} className={styles.bottomNav}>
         {NAV_ITEMS.map((item) => (
           <BottomNavigationAction
             key={item.path}
-            label={item.label}
             icon={item.icon}
+            aria-label={item.label}
             onClick={() => navigate(item.path)}
           />
         ))}

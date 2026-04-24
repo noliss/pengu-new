@@ -1,86 +1,131 @@
 @use '@shared/styles/tokens' as t;
 
+// Нижний нав — тонкая glass-полоса на всю ширину. Icons-only, высота 44px
+// (min tap target Apple HIG; ширина ячейки ~1/3 экрана → эффективная тап-зона
+// сильно больше, UX не страдает). Активная иконка подсвечивается компактной
+// «таблеткой» 44×28, не перекрывающей всю ячейку.
 .container {
   position: relative;
   min-height: 100%;
-  padding-bottom: 56px;
 
-  // На мобилках учитываем 80px top-safe-area.
-  --available-height: calc(100dvh - 56px);
+  --nav-safe-bottom: 44px;
+  padding-bottom: var(--nav-safe-bottom);
+  --available-height: calc(100dvh - var(--nav-safe-bottom));
 
   &.mobile {
     padding-top: 80px;
-    --available-height: calc(100dvh - 56px - 80px);
+    --available-height: calc(100dvh - 80px - var(--nav-safe-bottom));
   }
 }
 
 .bottomNav {
-  background: t.$color-overlay-strong;
-  backdrop-filter: t.$blur-sm;
-  border-top: 2px solid t.$color-glass-border;
-  border-radius: 40px 40px 0 0;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 0;
   z-index: t.$z-bottom-nav;
 
+  // Glass: полупрозрачная подложка с сильным blur. Верх чуть плотнее за счёт
+  // легкого vertical-градиента — иконкам не на что «просвечивать», и они
+  // читаются без индивидуальных плашек.
+  background:
+    linear-gradient(
+      180deg,
+      rgba(6, 10, 20, 0.72) 0%,
+      rgba(6, 10, 20, 0.52) 100%
+    );
+  backdrop-filter: blur(28px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  border-top: 1px solid t.$color-glass-border-soft;
+  box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.4);
+
+  // Cyan-подсветка вдоль верхней грани — аккуратный «неоновый след»,
+  // объединяет бар с общей palette'ой проекта.
   &::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 40px 40px 0 0;
+    left: 15%;
+    right: 15%;
+    height: 1px;
     background: linear-gradient(
-      135deg,
-      rgba(200, 210, 255, 0.1) 0%,
-      rgba(200, 210, 255, 0.04) 100%
+      90deg,
+      transparent 0%,
+      rgba(0, 229, 255, 0.35) 50%,
+      transparent 100%
     );
-    z-index: -1;
+    pointer-events: none;
   }
 
   :global(.MuiBottomNavigationAction-root) {
     color: t.$color-text-secondary;
-    min-width: auto;
-    padding: 8px 12px;
-    transition: t.$transition-base;
-    border-radius: 0;
+    min-width: 0;
+    max-width: none;
+    height: 100%;
+    padding: 0;
+    position: relative;
+    transition: color t.$transition-duration-fast t.$transition-easing;
 
-    &:first-of-type {
-      border-top-left-radius: 40px;
+    // Убираем label полностью — icons-only. MUI всё равно рендерит .label,
+    // поэтому гасим через CSS.
+    :global(.MuiBottomNavigationAction-label) {
+      display: none;
     }
 
-    &:last-of-type {
-      border-top-right-radius: 40px;
+    // Таблетка за активной иконкой — появляется scale-in, без индивидуальных
+    // плашек у остальных (за читаемость отвечают drop-shadow у иконок + чуть
+    // более плотный градиент у бара).
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 44px;
+      height: 28px;
+      border-radius: 999px;
+      background: t.$color-accent-soft;
+      box-shadow:
+        inset 0 0 0 1px rgba(0, 229, 255, 0.3),
+        0 0 14px rgba(0, 229, 255, 0.22);
+      transform: translate(-50%, -50%) scale(0.8);
+      opacity: 0;
+      transition:
+        opacity t.$transition-duration-fast t.$transition-easing,
+        transform t.$transition-duration-fast t.$transition-easing;
+      z-index: 0;
     }
 
     &:hover {
       color: t.$color-text-primary;
-      background: t.$color-glass-bg;
     }
 
     &.Mui-selected {
       color: t.$color-accent;
-      background: t.$color-accent-soft;
-      box-shadow: t.$shadow-card;
-    }
-  }
 
-  :global(.MuiBottomNavigationAction-label) {
-    font-size: 0.75rem;
-    font-weight: 500;
-    transition: t.$transition-base;
-
-    &.Mui-selected {
-      font-size: 0.8rem;
-      font-weight: 600;
+      &::before {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
     }
   }
 
   :global(.MuiSvgIcon-root) {
-    font-size: 1.5rem;
-    transition: t.$transition-base;
+    font-size: 1.35rem;
+    position: relative;
+    z-index: 1;
+    // Двойной тёмный halo — плотный ближний (1px) + мягкий дальний (4px).
+    // Визуально "усаживает" иконку на любой фон без плашки.
+    filter:
+      drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.85))
+      drop-shadow(0 0 4px rgba(0, 0, 0, 0.5));
+    transition: filter t.$transition-duration-fast t.$transition-easing;
+  }
+
+  :global(.MuiBottomNavigationAction-root.Mui-selected .MuiSvgIcon-root) {
+    // На активном тёмный halo сменяется на cyan-glow — чистый акцент.
+    filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.65));
   }
 }

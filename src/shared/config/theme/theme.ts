@@ -79,6 +79,13 @@ export const createAppTheme = (): Theme =>
           },
         ],
       },
+      MuiBottomNavigation: {
+        styleOverrides: {
+          root: {
+            background: 'transparent',
+          },
+        },
+      },
       MuiPaper: {
         variants: [
           {

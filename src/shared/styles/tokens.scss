@@ -54,6 +54,11 @@ $blur-lg: blur(20px);
 $transition-base: all 0.3s ease;
 $transition-fast: all 0.2s ease;
 
+// Атомарные компоненты transition — чтобы можно было указывать конкретные
+// свойства (transform, opacity и т.п.), не перетирая сокращение.
+$transition-duration-fast: 0.2s;
+$transition-easing: ease;
+
 // z-index
 $z-bottom-nav: 1000;
 $z-floating-panel: 999;
