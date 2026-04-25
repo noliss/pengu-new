@@ -79,7 +79,17 @@ export const CardSlider = <T extends CardSliderItem>({
   return (
     <div className={cn(styles.wrapper, className)}>
       {canScrollPrev && <div className={cn(styles.arrow, styles.arrowLeft)}>‹</div>}
-      <div className={styles.embla} ref={emblaRef} onWheel={handleWheel}>
+      <div
+        className={cn(styles.embla, {
+          // Тень-плавный mask только с той стороны, где реально есть
+          // скрытые элементы. Если первый/последний полностью на экране —
+          // не затемняем его.
+          [styles.fadeLeft]: canScrollPrev,
+          [styles.fadeRight]: canScrollNext,
+        })}
+        ref={emblaRef}
+        onWheel={handleWheel}
+      >
         <div className={styles.emblaContainer}>
           {items.map((item) => {
             const isSelected = selectedId === item.id;

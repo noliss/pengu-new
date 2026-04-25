@@ -7,29 +7,46 @@
 }
 
 .embla {
+  // Ширина «фейда» по краям. По умолчанию 0 — fade'а нет.
+  // Включается только с тех сторон, где есть скрытый контент (через
+  // классы .fadeLeft/.fadeRight, выставляемые из CardSlider.tsx
+  // на основании embla.canScrollPrev/canScrollNext).
+  --fade-left: 0px;
+  --fade-right: 0px;
+
   overflow: hidden;
   flex: 1;
   cursor: grab;
 
-  // Плавное затухание по краям вместо резкого "обреза"
+  // Один общий mask, ширина зон затухания управляется CSS-переменными.
+  // При --fade-left=0 и --fade-right=0 mask эквивалентен сплошному заливу
+  // (граничные стопы совпадают), визуально без обрезки.
   mask-image: linear-gradient(
     to right,
     transparent 0,
-    #000 10px,
-    #000 calc(100% - 10px),
+    #000 var(--fade-left),
+    #000 calc(100% - var(--fade-right)),
     transparent 100%
   );
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0,
-    #000 10px,
-    #000 calc(100% - 10px),
+    #000 var(--fade-left),
+    #000 calc(100% - var(--fade-right)),
     transparent 100%
   );
 
   &:active {
     cursor: grabbing;
   }
+}
+
+.fadeLeft {
+  --fade-left: 10px;
+}
+
+.fadeRight {
+  --fade-right: 10px;
 }
 
 .emblaContainer {
