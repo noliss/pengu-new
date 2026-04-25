@@ -1,11 +1,39 @@
+// Wrapper занимает всю выделенную родителем область (обычно `.stageInner`
+// в GeneratePage). Никакого вертикального padding'а — отступы должны быть
+// у внешнего контейнера, иначе он съедает высоту, и Lottie мерит SVG по
+// auto-высоте → получаем интринзик-размер, который вылезает за стейдж и
+// клипается сверху/снизу.
 .wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 20px 0;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
+// `.animation` — корневой div lottie-react, в него монтируется SVG.
+// Жёстко тянем его на всю обёртку, чтобы lottie-web мерил контейнер по
+// фиксированному размеру и сам корректно letter-box'ил svg
+// (preserveAspectRatio="xMidYMid meet" по умолчанию).
 .animation {
-  height: auto;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  // Сам SVG внутри — фит-инсайд по обоим осям. !important чтобы перебить
+  // inline-стили, которые lottie-web ставит на svg при ресайзе.
+  > svg {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100%;
+    max-height: 100%;
+  }
 }
