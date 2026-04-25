@@ -26,10 +26,28 @@ export const en = {
   },
   profile: {
     title: 'Profile',
-    userInfo: 'User information',
-    userId: 'User ID',
-    language: 'Language',
-    wallet: 'Wallet',
-    notConnected: 'Not connected',
+    anonymous: 'User',
+    shareProfile: 'Share profile',
+    role: {
+      user: 'User',
+      premium: 'Premium',
+    },
+    referral: {
+      title: 'Referral program',
+      friends: 'Friends',
+      earned: 'Earned',
+      details: 'Details',
+    },
+    inventory: 'Inventory',
+    inventoryHint: 'Stickers, emojis & items',
+    myCharacters: 'My characters',
+    myCharactersHint: 'Generation history',
+    settings: 'Settings',
+    settingsMock: {
+      preferences: 'Preferences',
+      notifications: 'Notifications',
+      sounds: 'Sounds',
+      language: 'Language',
+    },
   },
 } as const;

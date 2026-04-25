@@ -1,0 +1,82 @@
+@use '@shared/styles/tokens' as t;
+
+.card {
+  width: 100%;
+}
+
+.content {
+  padding: 16px 18px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.title {
+  color: t.$color-text-primary;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.detailsButton {
+  flex-shrink: 0;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  align-items: stretch;
+  padding: 12px 8px;
+  gap: 8px;
+  border-radius: t.$radius-lg;
+  background: t.$color-glass-bg-soft;
+  border: 1px solid t.$color-glass-border-soft;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+}
+
+.statIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: t.$radius-pill;
+  background: t.$color-accent-soft;
+  color: t.$color-accent;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.15);
+
+  :global(.MuiSvgIcon-root) {
+    font-size: 1rem;
+  }
+}
+
+.statLabel {
+  color: t.$color-text-secondary;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.statValue {
+  color: t.$color-text-primary;
+  font-weight: 700;
+  font-size: 1.15rem;
+  line-height: 1.2;
+}
+
+.divider {
+  background: t.$color-glass-border-soft;
+}

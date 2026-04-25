@@ -26,10 +26,28 @@ export const ru = {
   },
   profile: {
     title: 'Профиль',
-    userInfo: 'Информация о пользователе',
-    userId: 'ID пользователя',
-    language: 'Язык',
-    wallet: 'Кошелёк',
-    notConnected: 'Не подключен',
+    anonymous: 'Пользователь',
+    shareProfile: 'Поделиться профилем',
+    role: {
+      user: 'Пользователь',
+      premium: 'Premium',
+    },
+    referral: {
+      title: 'Реферальная программа',
+      friends: 'Друзья',
+      earned: 'Заработано',
+      details: 'Подробнее',
+    },
+    inventory: 'Инвентарь',
+    inventoryHint: 'Стикеры, эмодзи и предметы',
+    myCharacters: 'Мои персонажи',
+    myCharactersHint: 'История генераций',
+    settings: 'Настройки',
+    settingsMock: {
+      preferences: 'Предпочтения',
+      notifications: 'Уведомления',
+      sounds: 'Звуки',
+      language: 'Язык',
+    },
   },
 } as const;

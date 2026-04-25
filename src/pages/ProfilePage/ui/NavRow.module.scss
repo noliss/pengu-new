@@ -1,0 +1,73 @@
+@use '@shared/styles/tokens' as t;
+
+.row {
+  display: flex !important;
+  width: 100%;
+  padding: 12px 16px !important;
+  gap: 14px;
+  align-items: center;
+  text-align: left;
+  border-radius: t.$radius-xl !important;
+  background: t.$color-glass-bg !important;
+  border: 1px solid t.$color-glass-border-soft !important;
+  backdrop-filter: t.$blur-sm;
+  -webkit-backdrop-filter: t.$blur-sm;
+  transition: t.$transition-base;
+
+  &:hover {
+    background: t.$color-glass-bg-strong !important;
+    border-color: t.$color-glass-border !important;
+
+    .chevron {
+      transform: translateX(2px);
+      color: t.$color-accent;
+    }
+  }
+
+  &:active {
+    transform: scale(0.99);
+  }
+}
+
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: t.$radius-lg;
+  background: t.$color-accent-soft;
+  color: t.$color-accent;
+  border: 1px solid rgba(0, 229, 255, 0.18);
+
+  :global(.MuiSvgIcon-root) {
+    font-size: 1.2rem;
+  }
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.title {
+  color: t.$color-text-primary;
+  font-weight: 500;
+  font-size: 0.95rem;
+  line-height: 1.25;
+}
+
+.hint {
+  color: t.$color-text-secondary;
+  font-size: 0.72rem;
+}
+
+.chevron {
+  color: t.$color-text-secondary;
+  transition: t.$transition-base;
+  flex-shrink: 0;
+}

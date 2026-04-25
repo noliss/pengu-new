@@ -1,98 +1,87 @@
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Container from '@mui/material/Container';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
+import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 import { Page, PageHeader } from '@shared/ui';
 import { ConnectWalletButton } from '@features/connect-wallet';
 import { useAppSelector } from '@shared/store';
 import { selectUser } from '@entities/user';
-import { selectShortWalletAddress, selectIsWalletConnected } from '@entities/wallet';
+import { UserInfoCard } from './UserInfoCard';
+import { ReferralCard } from './ReferralCard';
+import { NavRow } from './NavRow';
+import { ProfileSettingsDialog } from './ProfileSettingsDialog';
 import styles from './ProfilePage.module.scss';
+
+// Моки: в проекте ещё нет referral-модели, показываем правдоподобные значения.
+const MOCK_REFERRAL = {
+  friends: 12,
+  earned: '8.5k PGU',
+} as const;
 
 export const ProfilePage = () => {
   const { t } = useTranslation();
   const user = useAppSelector(selectUser);
-  const shortAddress = useAppSelector(selectShortWalletAddress);
-  const isWalletConnected = useAppSelector(selectIsWalletConnected);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
-  const displayName =
-    user?.firstName && user?.lastName
-      ? `${user.firstName} ${user.lastName}`
-      : user?.firstName || user?.username || 'Anonymous';
+  const handleShare = useCallback(() => {
+    // TODO: интеграция с Telegram WebApp share (shareURL / inline query).
+  }, []);
+
+  const handleReferralDetails = useCallback(() => {
+    // TODO: переход на страницу реферальной программы, когда появится роут.
+  }, []);
+
+  const handleInventory = useCallback(() => {
+    // TODO: переход в инвентарь, когда появится роут/страница.
+  }, []);
+
+  const handleCharacters = useCallback(() => {
+    // TODO: переход к сгенерированным персонажам (история).
+  }, []);
 
   return (
     <Page>
-      <Container maxWidth="sm" sx={{ padding: '15px 15px' }}>
+      <Container maxWidth="sm">
         <PageHeader title={t('profile.title')} rightSlot={<ConnectWalletButton />} />
 
-        <Grid container spacing={2}>
-          <Grid size={12}>
-            <Card variant="glass">
-              <CardContent>
-                <Box className={styles.avatarRow}>
-                  <Avatar src={user?.photoUrl} alt={user?.firstName || 'User'} className={styles.avatar}>
-                    {user?.firstName?.[0] || user?.username?.[0] || 'U'}
-                  </Avatar>
-                  <Box className={styles.nameBlock}>
-                    <Typography variant="h5" className={styles.displayName}>
-                      {displayName}
-                    </Typography>
-                    {user?.username && (
-                      <Typography variant="body2" className={styles.username}>
-                        @{user.username}
-                      </Typography>
-                    )}
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
+        <Box className={styles.stack}>
+          <UserInfoCard user={user} onShare={handleShare} />
 
-          <Grid size={12}>
-            <Card variant="glass">
-              <CardContent>
-                <Typography variant="h6" className={styles.infoTitle}>
-                  {t('profile.userInfo')}
-                </Typography>
-                <Grid container spacing={2}>
-                  {user?.id !== undefined && (
-                    <Grid size={12}>
-                      <Typography variant="body2" className={styles.infoLabel}>
-                        {t('profile.userId')}
-                      </Typography>
-                      <Typography variant="body1" className={styles.infoValue}>
-                        {user.id}
-                      </Typography>
-                    </Grid>
-                  )}
-                  {user?.languageCode && (
-                    <Grid size={12}>
-                      <Typography variant="body2" className={styles.infoLabel}>
-                        {t('profile.language')}
-                      </Typography>
-                      <Typography variant="body1" className={styles.infoValue}>
-                        {user.languageCode.toUpperCase()}
-                      </Typography>
-                    </Grid>
-                  )}
-                  <Grid size={12}>
-                    <Typography variant="body2" className={styles.infoLabel}>
-                      {t('profile.wallet')}
-                    </Typography>
-                    <Typography variant="body1" className={styles.infoValue}>
-                      {isWalletConnected ? shortAddress : t('profile.notConnected')}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+          <ReferralCard
+            friends={MOCK_REFERRAL.friends}
+            earned={MOCK_REFERRAL.earned}
+            onDetails={handleReferralDetails}
+          />
+
+          <Box className={styles.rowGroup}>
+            <NavRow
+              icon={<Inventory2OutlinedIcon />}
+              title={t('profile.inventory')}
+              hint={t('profile.inventoryHint')}
+              onClick={handleInventory}
+            />
+            <NavRow
+              icon={<AutoAwesomeOutlinedIcon />}
+              title={t('profile.myCharacters')}
+              hint={t('profile.myCharactersHint')}
+              onClick={handleCharacters}
+            />
+            <NavRow
+              icon={<TuneOutlinedIcon />}
+              title={t('profile.settings')}
+              onClick={() => setSettingsOpen(true)}
+            />
+          </Box>
+        </Box>
       </Container>
+
+      <ProfileSettingsDialog
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+      />
     </Page>
   );
 };

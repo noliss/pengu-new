@@ -1,0 +1,94 @@
+@use '@shared/styles/tokens' as t;
+
+.card {
+  position: relative;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 22px 20px 20px !important;
+  gap: 14px;
+}
+
+.shareButton {
+  // Абсолютно позиционируем над содержимым — не ломает вертикальный центр
+  // карточки. !important потому что MuiIconButton-root имеет свои цвета.
+  position: absolute !important;
+  top: 10px;
+  right: 10px;
+  color: t.$color-text-secondary !important;
+  background: t.$color-glass-bg-soft !important;
+  border: 1px solid t.$color-glass-border-soft !important;
+  transition: t.$transition-base;
+
+  &:hover {
+    color: t.$color-accent !important;
+    background: t.$color-accent-soft !important;
+    border-color: rgba(0, 229, 255, 0.3) !important;
+  }
+}
+
+.avatar {
+  width: 104px !important;
+  height: 104px !important;
+  font-size: 2.2rem !important;
+  border: 2px solid t.$color-glass-border-strong;
+  box-shadow:
+    0 0 0 1px rgba(0, 229, 255, 0.08),
+    0 10px 26px rgba(0, 0, 0, 0.55);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.name {
+  color: t.$color-text-primary;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+.username {
+  color: t.$color-text-secondary;
+  font-size: 0.85rem;
+}
+
+// Бейдж роли — компактная pill. Вариант `premium` подсвечивается cyan-акцентом,
+// дефолтный `user` — нейтральный glass, чтобы не спорить с premium визуально.
+.roleBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  margin-top: 6px;
+  border-radius: t.$radius-pill;
+  background: t.$color-glass-bg-strong;
+  border: 1px solid t.$color-glass-border;
+  color: t.$color-text-secondary;
+
+  :global(.MuiSvgIcon-root) {
+    font-size: 0.95rem;
+  }
+
+  &[data-variant='premium'] {
+    background: t.$color-accent-soft;
+    border-color: rgba(0, 229, 255, 0.35);
+    color: t.$color-accent;
+    box-shadow: 0 0 14px rgba(0, 229, 255, 0.15);
+  }
+}
+
+.roleText {
+  font-size: 0.72rem;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
