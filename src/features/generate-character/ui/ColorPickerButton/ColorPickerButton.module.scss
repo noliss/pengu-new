@@ -138,6 +138,49 @@
   }
 }
 
+
+.formatToggle {
+  display: flex;
+  width: 100%;
+  gap: 0;
+  padding: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid t.$color-glass-border-soft;
+  border-radius: 999px;
+  box-sizing: border-box;
+}
+
+.formatTab {
+  flex: 1;
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 5px 12px;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.18s ease;
+
+  &:hover:not(.formatTabActive) {
+    color: t.$color-text-primary;
+  }
+
+  &:focus-visible {
+    outline: 1px solid rgba(0, 229, 255, 0.55);
+    outline-offset: 1px;
+  }
+}
+
+.formatTabActive {
+  background: rgba(0, 229, 255, 0.16);
+  color: t.$color-accent;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.18);
+}
+
 // Строка hex-управления: pill с цветом/HEX/copy + отдельная apply-кнопка справа.
 .hexRow {
   display: flex;
@@ -204,6 +247,76 @@
 
   svg {
     font-size: 14px;
+  }
+}
+
+.rgbInputs {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.rgbChannel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 0 6px;
+
+  &:first-child {
+    padding-left: 2px;
+  }
+
+  &:last-child {
+    padding-right: 2px;
+  }
+
+  & + & {
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
+
+.rgbLabel {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.rgbInput {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: 20px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: t.$color-text-primary;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &::selection {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  &:focus {
+    color: t.$color-accent;
   }
 }
 
