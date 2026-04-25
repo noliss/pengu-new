@@ -1,12 +1,12 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, type CSSProperties } from 'react';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import { BottomSheet } from '@shared/ui';
+import StickyNote2OutlinedIcon from '@mui/icons-material/StickyNote2Outlined';
+import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
+import cn from 'classnames';
+import { BottomSheet } from '@shared/ui/BottomSheet/BottomSheet';
 import type { GenerationType } from '@entities/character';
+import { GradientButton } from '../GradientButton';
 import styles from './GenerateSettingsDialog.module.scss';
 
 interface GenerateSettingsDialogProps {
@@ -17,17 +17,28 @@ interface GenerateSettingsDialogProps {
   onSave?: (characterName: string, generationType: GenerationType) => void;
 }
 
-/**
- * Диалог «Создать персонажа» с pre-mount'ом (`keepMounted`) — рендерится
- * сразу при заходе на страницу генерации, чтобы первое открытие было без
- * лагов даже на слабых устройствах.
- *
- * Поскольку поддерево не размонтируется на close, инициализация `useState`
- * происходит только один раз. Чтобы при повторном open подхватывались
- * актуальные `characterName`/`generationType` из redux, синхронизируем
- * локальный стейт по транзишну `open: false → true` (паттерн «Adjust state
- * while rendering» — без useEffect и cascading-render'ов).
- */
+
+const TYPE_OPTIONS: ReadonlyArray<{
+  value: GenerationType;
+  label: string;
+  placeholder: string;
+  Icon: typeof StickyNote2OutlinedIcon;
+}> = [
+  {
+    value: 'sticker',
+    label: 'Стикер',
+    placeholder: 'Название стикер-пака',
+    Icon: StickyNote2OutlinedIcon,
+  },
+  {
+    value: 'emoji',
+    label: 'Эмодзи',
+    placeholder: 'Название эмодзи-пака',
+    Icon: EmojiEmotionsOutlinedIcon,
+  },
+];
+
+
 export const GenerateSettingsDialog = ({
   open,
   onClose,
@@ -54,10 +65,18 @@ export const GenerateSettingsDialog = ({
     onClose();
   }, [name, type, onSave, onClose]);
 
+  const placeholder =
+    TYPE_OPTIONS.find((o) => o.value === type)?.placeholder ?? 'Название';
+
+  const activeIdx = Math.max(
+    0,
+    TYPE_OPTIONS.findIndex((o) => o.value === type),
+  );
+
   return (
     <BottomSheet open={open} onClose={onClose} title="Создать персонажа" keepMounted>
       <TextField
-        label="Название персонажа"
+        label={placeholder}
         value={name}
         onChange={(e) => setName(e.target.value)}
         fullWidth
@@ -66,30 +85,36 @@ export const GenerateSettingsDialog = ({
         className={styles.textField}
       />
 
-      <Box className={styles.typeRow}>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={type === 'emoji'}
-              onChange={(e) => setType(e.target.checked ? 'emoji' : 'sticker')}
-            />
-          }
-          label={
-            <Typography className={styles.switchLabel}>
-              {type === 'emoji' ? 'Эмодзи' : 'Стикер'}
-            </Typography>
-          }
-          sx={{ margin: 0 }}
-        />
-      </Box>
-
       <Box className={styles.actions}>
-        <Button onClick={onClose} variant="glass">
-          Отмена
-        </Button>
-        <Button onClick={handleSave} variant="glassPrimary">
-          Создать
-        </Button>
+        <Box
+          className={styles.typeToggle}
+          role="radiogroup"
+          aria-label="Тип генерации"
+          style={{ '--toggle-idx': activeIdx } as CSSProperties}
+        >
+          <span className={styles.typeThumb} aria-hidden />
+          {TYPE_OPTIONS.map(({ value, label, Icon }) => {
+            const isActive = type === value;
+            return (
+              <button
+                key={value}
+                type="button"
+                role="radio"
+                aria-checked={isActive}
+                aria-label={label}
+                title={label}
+                className={cn(styles.typeOption, { [styles.typeOptionActive]: isActive })}
+                onClick={() => setType(value)}
+              >
+                <Icon className={styles.typeOptionIcon} />
+              </button>
+            );
+          })}
+        </Box>
+
+        <GradientButton onClick={handleSave} className={styles.createButton}>
+          Generate
+        </GradientButton>
       </Box>
     </BottomSheet>
   );

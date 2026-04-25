@@ -1,0 +1,171 @@
+@use '@shared/styles/tokens' as t;
+
+// Плавный magenta/cyan-sway по бордеру в режиме покоя; на hover тот же
+// градиент проявляется как плотная заливка и наружный glow. Магия рамки —
+// через mask-composite: exclude на ::before.
+@keyframes gradientSway {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes sparkleAnim {
+  0%,
+  40%,
+  80% {
+    opacity: 0.7;
+    transform: scale(1) rotate(0deg);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1.25) rotate(5deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.25) rotate(-5deg);
+  }
+}
+
+.btn {
+  // Размеры через переменные с дефолтами — caller (через свой className на
+  // том же элементе) может переопределить без !important. .btn сам ничего
+  // в эти переменные не пишет, только читает с fallback'ом, поэтому порядок
+  // подгрузки CSS-модулей не влияет на результат.
+  position: relative;
+  height: var(--btn-height, 36px);
+  min-width: 0 !important;
+  padding: 0 var(--btn-padding-x, 22px) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: var(--btn-font-size, 13px);
+  line-height: 1;
+  letter-spacing: 0.4px;
+  text-transform: none !important;
+  color: rgba(255, 255, 255, 0.78) !important;
+  border: none !important;
+  border-radius: t.$radius-pill !important;
+  // Собственного фона у корневого <button> нет: idle-шиммер живёт на .bgFill,
+  // а hover-заливка — на ::after.
+  background: transparent !important;
+  overflow: visible !important;
+  box-shadow: none !important;
+  z-index: 0;
+  transition: color 0.4s ease, transform 0.4s ease !important;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: t.$radius-pill;
+    padding: 2.5px;
+    background: linear-gradient(
+      135deg,
+      rgba(224, 64, 251, 0.55),
+      rgba(0, 229, 255, 0.55),
+      rgba(224, 64, 251, 0.55)
+    );
+    background-size: 200% 200%;
+    animation: gradientSway 3s ease infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: t.$radius-pill;
+    background: linear-gradient(135deg, #e040fb, #00e5ff, #e040fb);
+    background-size: 200% 200%;
+    animation: gradientSway 3s ease infinite;
+    opacity: 0.25;
+    transition: opacity 0.4s ease;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  &:hover {
+    color: #fff !important;
+    transform: scale(1.04);
+
+    &::before {
+      opacity: 0;
+    }
+    &::after {
+      opacity: 1;
+    }
+    .glow {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  &:focus,
+  &:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Idle-заливка: отдельный слой, живёт под бордером (z:-2) и не страдает
+// от сброса background'а корневого <button>'а со стороны MUI.
+.bgFill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(224, 64, 251, 0.22),
+    rgba(0, 229, 255, 0.22),
+    rgba(224, 64, 251, 0.22)
+  );
+  background-size: 200% 200%;
+  animation: gradientSway 3s ease infinite;
+  z-index: -2;
+  pointer-events: none;
+}
+
+// Наружный размытый ореол — включается только на hover.
+.glow {
+  position: absolute;
+  inset: -2px;
+  border-radius: t.$radius-pill;
+  background: linear-gradient(135deg, #e040fb, #00e5ff, #e040fb);
+  background-size: 200% 200%;
+  animation: gradientSway 3s ease infinite;
+  filter: blur(15px);
+  z-index: -3;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.sparkle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.75;
+  animation: sparkleAnim 1.5s ease-in-out infinite;
+  color: currentColor;
+}
