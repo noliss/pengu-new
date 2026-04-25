@@ -30,21 +30,32 @@
   box-sizing: border-box;
 }
 
-// Grip: крупный прозрачный hit-area со стилизованной полоской внутри.
-// touch-action: none — обязательно: иначе на мобиле начинается нативная
-// прокрутка/жест браузера и наш pointermove прерывается pointercancel'ом.
+// Grip-area: тянется на всю ширину верхней полосы sheet'а — пользователь
+// может начать drag в любой точке сверху, не только по самой черточке.
+// Визуальный grip (36×3px) центрируется внутри через flex.
+//
+// Отрицательные margin'ы компенсируют padding body (14px по бокам, 14px
+// сверху), чтобы hit-area доходила до самых краёв paper'а. По вертикали
+// padding 14px → ~28px touch-target — комфортно, и при этом не залезает
+// на title/контент ниже (drag-only-down + snap-back при малом смещении
+// гарантируют, что случайный тап не закроет sheet).
+//
+// touch-action: none — обязательно: иначе на мобиле включается нативный
+// scroll/refresh-жест и наш pointermove прерывается pointercancel'ом.
 .gripArea {
   appearance: none;
   background: transparent;
   border: none;
   outline: none;
-  padding: 10px 24px;
-  margin: -8px 0 -4px;
-  align-self: center;
+  padding: 14px 0;
+  margin: -14px -14px -4px;
+  width: calc(100% + 28px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: grab;
   touch-action: none;
   -webkit-tap-highlight-color: transparent;
-  display: block;
 
   &:active {
     cursor: grabbing;
