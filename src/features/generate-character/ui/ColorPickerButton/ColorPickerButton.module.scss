@@ -107,19 +107,19 @@
 
 // --- bottom sheet ---
 // Каркас (paper/backdrop/body/grip) живёт в shared/ui/BottomSheet;
-// здесь — только содержимое color-picker'а плюс локальное поджатие вертикали
-// (bodyClassName=compactBody), чтобы sheet занимал поменьше экрана.
 .compactBody {
-  padding: 6px 14px 10px !important;
-  gap: 6px !important;
+  padding: 8px 14px 12px !important;
+  gap: 10px !important;
+  max-width: none !important;
 }
 
 .pickerWrapper {
   width: 100%;
 
+  // Picker по высоте — clamp(min, ideal, max). На коротких ландшафт-экранах
   :global(.react-colorful) {
     width: 100%;
-    height: 88px;
+    height: clamp(150px, 24vh, 260px);
     border-radius: t.$radius-sm;
     overflow: hidden;
   }
@@ -127,14 +127,14 @@
     border-radius: t.$radius-sm t.$radius-sm 0 0;
   }
   :global(.react-colorful__hue) {
-    height: 8px;
+    height: 12px;
     border-radius: 0 0 t.$radius-sm t.$radius-sm;
   }
   :global(.react-colorful__pointer) {
-    width: 12px;
-    height: 12px;
+    width: 16px;
+    height: 16px;
     border: 2px solid white;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
   }
 }
 
