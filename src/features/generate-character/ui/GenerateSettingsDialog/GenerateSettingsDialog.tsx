@@ -18,23 +18,36 @@ interface GenerateSettingsDialogProps {
 }
 
 /**
- * Форма с внутренним состоянием — монтируется только при открытии BottomSheet'а
- * (keepMounted={false}), поэтому initial-значения можно безопасно подтягивать
- * в useState без useEffect.
+ * Диалог «Создать персонажа» с pre-mount'ом (`keepMounted`) — рендерится
+ * сразу при заходе на страницу генерации, чтобы первое открытие было без
+ * лагов даже на слабых устройствах.
+ *
+ * Поскольку поддерево не размонтируется на close, инициализация `useState`
+ * происходит только один раз. Чтобы при повторном open подхватывались
+ * актуальные `characterName`/`generationType` из redux, синхронизируем
+ * локальный стейт по транзишну `open: false → true` (паттерн «Adjust state
+ * while rendering» — без useEffect и cascading-render'ов).
  */
-const SettingsForm = ({
-  initialName,
-  initialType,
+export const GenerateSettingsDialog = ({
+  open,
   onClose,
+  characterName = '',
+  generationType = 'sticker',
   onSave,
-}: {
-  initialName: string;
-  initialType: GenerationType;
-  onClose: () => void;
-  onSave?: (name: string, type: GenerationType) => void;
-}) => {
-  const [name, setName] = useState(initialName);
-  const [type, setType] = useState<GenerationType>(initialType);
+}: GenerateSettingsDialogProps) => {
+  const [name, setName] = useState(characterName);
+  const [type, setType] = useState<GenerationType>(generationType);
+
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    // Синхронизируем только на момент открытия — пока пользователь печатает,
+    // не хотим перетирать его ввод сменой redux-значений.
+    if (open) {
+      setName(characterName);
+      setType(generationType);
+    }
+  }
 
   const handleSave = useCallback(() => {
     onSave?.(name, type);
@@ -42,7 +55,7 @@ const SettingsForm = ({
   }, [name, type, onSave, onClose]);
 
   return (
-    <>
+    <BottomSheet open={open} onClose={onClose} title="Создать персонажа" keepMounted>
       <TextField
         label="Название персонажа"
         value={name}
@@ -78,23 +91,6 @@ const SettingsForm = ({
           Создать
         </Button>
       </Box>
-    </>
+    </BottomSheet>
   );
 };
-
-export const GenerateSettingsDialog = ({
-  open,
-  onClose,
-  characterName = '',
-  generationType = 'sticker',
-  onSave,
-}: GenerateSettingsDialogProps) => (
-  <BottomSheet open={open} onClose={onClose} title="Создать персонажа">
-    <SettingsForm
-      initialName={characterName}
-      initialType={generationType}
-      onClose={onClose}
-      onSave={onSave}
-    />
-  </BottomSheet>
-);

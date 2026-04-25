@@ -2,12 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } f
 import { HexColorPicker } from 'react-colorful';
 import Popover from '@mui/material/Popover';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CheckIcon from '@mui/icons-material/Check';
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import cn from 'classnames';
 import { BottomSheet } from '@shared/ui/BottomSheet/BottomSheet';
 import styles from './ColorPickerButton.module.scss';
@@ -195,6 +195,9 @@ export const ColorPickerButton = ({
         onClose={closePopover}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        // Pre-mount: страница генерации горячая, swatches должны
+        // прорастать без задержки. Popover лёгкий, держать его в DOM дёшево.
+        keepMounted
         slotProps={{
           paper: {
             className: styles.popoverPaper,
@@ -238,44 +241,53 @@ export const ColorPickerButton = ({
         // Backdrop прозрачный: sheet полупрозрачный, хочется видеть пингвина
         // позади, чтобы на лету оценивать выбранный цвет.
         backdrop="transparent"
+        // HexColorPicker — самый тяжёлый dialog на странице (canvas-style
+        // picker + drag-to-close + дебаунс). Pre-mount убирает заметный
+        // тормоз при первом «свой цвет» на слабых устройствах.
+        keepMounted
         bodyClassName={styles.compactBody}
-        actions={
-          <Button
-            className={styles.sheetDone}
-            onClick={closeSheet}
-            variant="text"
-          >
-            Закрыть
-          </Button>
-        }
       >
         <Box className={styles.pickerWrapper}>
           <HexColorPicker color={liveColor} onChange={handlePickerChange} />
         </Box>
 
-        <Box className={styles.hexField}>
-          <Box
-            className={styles.hexSwatch}
-            style={{ backgroundColor: liveColor }}
-            aria-hidden
-          />
-          <input
-            type="text"
-            className={styles.hexInput}
-            value={hexInput}
-            onChange={handleHexChange}
-            spellCheck={false}
-            autoComplete="off"
-            maxLength={7}
-            aria-label="HEX-код цвета"
-          />
+        <Box className={styles.hexRow}>
+          <Box className={styles.hexField}>
+            <Box
+              className={styles.hexSwatch}
+              style={{ backgroundColor: liveColor }}
+              aria-hidden
+            />
+            <input
+              type="text"
+              className={styles.hexInput}
+              value={hexInput}
+              onChange={handleHexChange}
+              spellCheck={false}
+              autoComplete="off"
+              maxLength={7}
+              aria-label="HEX-код цвета"
+            />
+            <IconButton
+              size="small"
+              className={styles.hexCopy}
+              onClick={handleCopy}
+              aria-label={copied ? 'Скопировано' : 'Скопировать'}
+            >
+              {copied ? <CheckIcon fontSize="small" /> : <ContentCopyIcon fontSize="small" />}
+            </IconButton>
+          </Box>
+
+          {/* Apply: цвет уже применён real-time, кнопка просто закрывает sheet.
+              Стоит снаружи hex-pill отдельной круглой кнопкой — лёгкий
+              cyan-soft, чтобы не «пестрить» рядом со swatch'ем и copy. */}
           <IconButton
             size="small"
-            className={styles.hexCopy}
-            onClick={handleCopy}
-            aria-label={copied ? 'Скопировано' : 'Скопировать'}
+            className={styles.hexApply}
+            onClick={closeSheet}
+            aria-label="Применить цвет"
           >
-            {copied ? <CheckIcon fontSize="small" /> : <ContentCopyIcon fontSize="small" />}
+            <CheckRoundedIcon fontSize="small" />
           </IconButton>
         </Box>
       </BottomSheet>

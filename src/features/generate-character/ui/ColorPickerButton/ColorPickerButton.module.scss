@@ -138,8 +138,17 @@
   }
 }
 
-// Inline hex-поле: swatch + редактируемый input + кнопка копирования.
+// Строка hex-управления: pill с цветом/HEX/copy + отдельная apply-кнопка справа.
+.hexRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+// Inline hex-pill: swatch + редактируемый input + кнопка копирования.
 .hexField {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -198,21 +207,29 @@
   }
 }
 
-// "Готово" — компактная pill-кнопка в стиле дока. Real-time уже применил цвет,
-.sheetDone {
-  height: 28px;
-  border-radius: 999px !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: t.$color-text-primary !important;
-  font-weight: 600;
-  font-size: 12px !important;
-  letter-spacing: 0.3px;
-  text-transform: none !important;
-  padding: 0 12px !important;
-  min-width: 0 !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+// Apply (галочка). Лёгкая cyan-soft круглая кнопка снаружи hex-pill —
+// читается как «принять/готово», не перебивая swatch и сам HEX.
+.hexApply {
+  flex-shrink: 0;
+  width: 26px !important;
+  height: 26px !important;
+  padding: 0 !important;
+  color: t.$color-accent !important;
+  background: t.$color-accent-soft !important;
+  border: 1px solid rgba(0, 229, 255, 0.3) !important;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.18s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.14) !important;
+    background: rgba(0, 229, 255, 0.18) !important;
+    box-shadow: 0 0 14px rgba(0, 229, 255, 0.28);
+  }
+
+  &:active {
+    transform: scale(0.94);
+  }
+
+  svg {
+    font-size: 16px;
   }
 }

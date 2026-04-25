@@ -65,6 +65,15 @@ export interface BottomSheetProps {
   bodyClassName?: string;
   /** id заголовка — если передан, используется как `aria-labelledby` у Dialog. */
   titleId?: string;
+  /**
+   * Если `true`, MUI Dialog не размонтирует поддерево после закрытия:
+   * содержимое остаётся в DOM (скрыто), и повторный open проигрывает уже
+   * прогретую анимацию без рекомпиляции стилей и mount-стоимости детей.
+   * Включать на «горячих» dialog'ах, где первый open заметно подтормаживает
+   * на слабых устройствах (страница генерации). По умолчанию `false`,
+   * чтобы лёгкие диалоги (вроде settings'а в профиле) не висели в памяти.
+   */
+  keepMounted?: boolean;
   /** slotProps без изменений — только на случай редких кейсов (например, чтобы Popover-потомки могли зацепиться). */
   slotProps?: DialogProps['slotProps'];
 }
@@ -98,6 +107,7 @@ export const BottomSheet = ({
   showGrip = true,
   bodyClassName,
   titleId,
+  keepMounted = false,
   slotProps,
 }: BottomSheetProps) => {
   const backdropClassName =
@@ -196,7 +206,7 @@ export const BottomSheet = ({
       TransitionComponent={SlideUp}
       fullWidth
       maxWidth={false}
-      keepMounted={false}
+      keepMounted={keepMounted}
       aria-labelledby={title && titleId ? titleId : undefined}
       slotProps={{
         ...slotProps,

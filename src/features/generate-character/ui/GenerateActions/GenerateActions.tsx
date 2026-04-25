@@ -115,6 +115,7 @@ export const GenerateActions = ({ partIds, svgIds, colors, onGenerate }: Generat
         onClose={closeDelete}
         title="Удалить персонажа?"
         titleId="delete-character-title"
+        keepMounted
         actions={
           <>
             <Button onClick={closeDelete} variant="glass">
