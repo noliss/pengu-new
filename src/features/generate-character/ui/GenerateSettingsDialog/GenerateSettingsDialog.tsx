@@ -15,6 +15,8 @@ interface GenerateSettingsDialogProps {
   characterName?: string;
   generationType?: GenerationType;
   onSave?: (characterName: string, generationType: GenerationType) => void;
+  /** У Modal на странице генерации: меньше фриза при открытии поверх Lottie. */
+  disableScrollLock?: boolean;
 }
 
 
@@ -45,6 +47,7 @@ export const GenerateSettingsDialog = ({
   characterName = '',
   generationType = 'sticker',
   onSave,
+  disableScrollLock = false,
 }: GenerateSettingsDialogProps) => {
   const [name, setName] = useState(characterName);
   const [type, setType] = useState<GenerationType>(generationType);
@@ -74,7 +77,13 @@ export const GenerateSettingsDialog = ({
   );
 
   return (
-    <BottomSheet open={open} onClose={onClose} title="Создать персонажа" keepMounted>
+    <BottomSheet
+      open={open}
+      onClose={onClose}
+      title="Создать персонажа"
+      keepMounted
+      disableScrollLock={disableScrollLock}
+    >
       <TextField
         label={placeholder}
         value={name}

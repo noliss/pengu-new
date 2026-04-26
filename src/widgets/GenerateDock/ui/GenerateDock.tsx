@@ -27,7 +27,10 @@ const svgItems = Object.entries(svgModules)
 type SvgItem = (typeof svgItems)[number];
 
 interface GenerateDockProps {
-  onGenerate?: () => void;
+  /** Открыть sheet «Создать персонажа» (состояние на странице генерации). */
+  onOpenCreate: () => void;
+  /** Открыть подтверждение удаления драфта. */
+  onOpenDelete: () => void;
 }
 
 /**
@@ -35,7 +38,7 @@ interface GenerateDockProps {
  * Редактор плавно "выдвигается" между превью персонажа и рядом частей, когда
  * пользователь выбирает часть тела, — пингвин и контролы всегда остаются видимы.
  */
-export const GenerateDock = ({ onGenerate }: GenerateDockProps) => {
+export const GenerateDock = ({ onOpenCreate, onOpenDelete }: GenerateDockProps) => {
   const dispatch = useAppDispatch();
   const activePartId = useAppSelector(selectActivePartId);
   const activeSelection = useAppSelector((state) =>
@@ -151,7 +154,8 @@ export const GenerateDock = ({ onGenerate }: GenerateDockProps) => {
           partIds={partIds}
           svgIds={svgIds}
           colors={DEFAULT_COLORS}
-          onGenerate={onGenerate}
+          onOpenCreate={onOpenCreate}
+          onOpenDelete={onOpenDelete}
         />
       </Box>
     </Box>

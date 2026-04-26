@@ -4,10 +4,13 @@ import { Page, LottieAnimation } from '@shared/ui';
 import { MOCK_COLLECTIONS } from '@entities/collection';
 import { CollectionSwitcher, type SwitchDirection } from '@widgets/CollectionSwitcher';
 import { GenerateDock } from '@widgets/GenerateDock';
+import { GenerateActionsModals } from '@features/generate-character';
 import penguAnimation from '@assets/lottie/pengu.json';
 import styles from './GeneratePage.module.scss';
 
 export const GeneratePage = () => {
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [collectionIndex, setCollectionIndex] = useState(0);
   // Направление последнего переключения нужно switcher'у для выбора
   // направления анимации заголовка (куда улетает / откуда прилетает).
@@ -31,8 +34,19 @@ export const GeneratePage = () => {
     });
   }, []);
 
+  const handleGenerate = useCallback(() => {
+    // TODO: запустить генерацию через api/thunk
+  }, []);
+
   return (
     <Page>
+      <GenerateActionsModals
+        createOpen={createDialogOpen}
+        deleteOpen={deleteDialogOpen}
+        onCloseCreate={() => setCreateDialogOpen(false)}
+        onCloseDelete={() => setDeleteDialogOpen(false)}
+        onGenerate={handleGenerate}
+      />
       <Box className={styles.content}>
         <CollectionSwitcher
           title={collection?.title ?? ''}
@@ -52,9 +66,8 @@ export const GeneratePage = () => {
         </Box>
 
         <GenerateDock
-          onGenerate={() => {
-            // TODO: запустить генерацию через api/thunk
-          }}
+          onOpenCreate={() => setCreateDialogOpen(true)}
+          onOpenDelete={() => setDeleteDialogOpen(true)}
         />
       </Box>
     </Page>

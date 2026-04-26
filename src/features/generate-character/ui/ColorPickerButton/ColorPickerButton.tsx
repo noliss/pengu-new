@@ -11,6 +11,7 @@ import {
 } from 'react';
 import Popover from '@mui/material/Popover';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
@@ -132,8 +133,29 @@ const HSL_CHANNELS: ReadonlyArray<{ key: keyof HslStrings; label: string; aria: 
 
 const HSL_MAX: Record<keyof HslStrings, number> = { h: 360, s: 100, l: 100 };
 
-const LazyHexColorPicker = lazy(() =>
-  import('react-colorful').then((m) => ({ default: m.HexColorPicker })),
+/** Не даём Suspense-fallback мелькнуть, если чанк прилетел слишком быстро. */
+const PICKER_CHUNK_MIN_MS = 500;
+
+const LazyHexColorPicker = lazy(async () => {
+  const [mod] = await Promise.all([
+    import('react-colorful'),
+    new Promise<void>((resolve) => {
+      window.setTimeout(resolve, PICKER_CHUNK_MIN_MS);
+    }),
+  ]);
+  return { default: mod.HexColorPicker };
+});
+
+const HexColorPickerLoader = () => (
+  <Box
+    className={styles.pickerLoader}
+    role="status"
+    aria-live="polite"
+    aria-busy="true"
+    aria-label="Загрузка палитры"
+  >
+    <CircularProgress size={28} thickness={4} sx={{ color: 'rgba(255, 255, 255, 0.55)' }} />
+  </Box>
 );
 
 interface ColorPickerButtonProps {
@@ -385,6 +407,7 @@ const ColorPickerButtonComponent = ({
         open={popoverOpen}
         anchorEl={anchorEl}
         onClose={closePopover}
+        transitionDuration={0}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         slotProps={{
@@ -433,7 +456,7 @@ const ColorPickerButtonComponent = ({
         bodyClassName={styles.compactBody}
       >
         <Box className={styles.pickerWrapper}>
-          <Suspense fallback={null}>
+          <Suspense fallback={<HexColorPickerLoader />}>
             <LazyHexColorPicker color={liveColor} onChange={handlePickerChange} />
           </Suspense>
         </Box>

@@ -138,6 +138,18 @@
   }
 }
 
+.pickerLoader {
+  width: 100%;
+  min-height: clamp(150px, 24vh, 260px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: t.$radius-sm;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid t.$color-glass-border-soft;
+  box-sizing: border-box;
+}
+
 
 .formatToggle {
   display: flex;

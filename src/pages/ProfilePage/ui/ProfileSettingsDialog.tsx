@@ -24,7 +24,13 @@ export const ProfileSettingsDialog = ({ open, onClose }: ProfileSettingsDialogPr
   const [language, setLanguage] = useState<LanguageOption>('ru');
 
   return (
-    <BottomSheet open={open} onClose={onClose} title={t('profile.settings')}>
+    <BottomSheet
+      open={open}
+      onClose={onClose}
+      title={t('profile.settings')}
+      titleId="profile-settings-title"
+      keepMounted
+    >
       <Box className={styles.group}>
         <Typography variant="caption" className={styles.groupLabel}>
           {t('profile.settingsMock.preferences')}

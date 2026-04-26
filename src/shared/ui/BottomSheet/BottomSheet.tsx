@@ -1,41 +1,21 @@
 import {
-  forwardRef,
   useCallback,
   useEffect,
   useRef,
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
-  type ReactElement,
   type ReactNode,
-  type Ref,
 } from 'react';
 import Dialog, { type DialogProps } from '@mui/material/Dialog';
-import Slide, { type SlideProps } from '@mui/material/Slide';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import cn from 'classnames';
 import styles from './BottomSheet.module.scss';
 
-// Единая slide-up анимация снизу — используется во всех bottom-sheet'ах.
-// forwardRef обязателен: MUI прокидывает ref в TransitionComponent
-// для корректной работы фокуса/клавиатуры.
-const SlideUp = forwardRef(
-  (
-    { children, ...props }: SlideProps & { children: ReactElement },
-    ref: Ref<unknown>,
-  ) => (
-    <Slide direction="up" ref={ref} {...props}>
-      {children}
-    </Slide>
-  ),
-);
-SlideUp.displayName = 'BottomSheetSlideUp';
-
 // Пороги drag-to-close: или достаточно далеко утянули вниз,
 // или бросили быстрым flick-жестом (px/ms).
 const DRAG_CLOSE_DISTANCE_PX = 80;
 const DRAG_CLOSE_VELOCITY = 0.6;
-const DRAG_SNAP_TRANSITION = 'transform 0.22s cubic-bezier(0.2, 0.6, 0.2, 1)';
 
 export interface BottomSheetProps {
   open: boolean;
@@ -66,25 +46,26 @@ export interface BottomSheetProps {
   /** id заголовка — если передан, используется как `aria-labelledby` у Dialog. */
   titleId?: string;
   /**
-   * Если `true`, MUI Dialog не размонтирует поддерево после закрытия:
-   * содержимое остаётся в DOM (скрыто), и повторный open проигрывает уже
-   * прогретую анимацию без рекомпиляции стилей и mount-стоимости детей.
-   * Включать на «горячих» dialog'ах, где первый open заметно подтормаживает
-   * на слабых устройствах (страница генерации). По умолчанию `false`,
-   * чтобы лёгкие диалоги (вроде settings'а в профиле) не висели в памяти.
+   * Если `true`, MUI Dialog не размонтирует поддерево после закрытия
+   * (скрыто в DOM). Удобно для часто открываемых sheet'ов.
    */
   keepMounted?: boolean;
-  /** slotProps без изменений — только на случай редких кейсов (например, чтобы Popover-потомки могли зацепиться). */
+  /**
+   * Отключает scroll lock у Modal (padding на `body`, блокировка скролла).
+   * На странице генерации в связке с Lottie + `backdrop-filter` + фикс-навом
+   * это часто снимает заметный фриз при первом открытии sheet'а.
+   */
+  disableScrollLock?: boolean;
+  /** Доп. `slotProps` у MUI Dialog (редко). */
   slotProps?: DialogProps['slotProps'];
 }
 
 /**
  * Единый bottom-sheet проекта.
  *
- * Под капотом — обычный MUI `<Dialog>` с glassBottom-paper, фиксированный
- * внизу на всю ширину и Slide-up-переходом. Весь визуальный каркас
- * (padding, заголовок, футер, grip, backdrop) собирается здесь, чтобы
- * потребитель описывал только "содержательное" наполнение.
+ * MUI `<Dialog>` с glassBottom-paper у нижнего края; переходы отключены
+ * (`transitionDuration: 0`). Каркас (padding, заголовок, grip, backdrop)
+ * собран здесь.
  *
  * Drag-to-close: по нажатию и тяге вниз за grip-ручку paper смещается
  * вслед за пальцем/курсором; при отпускании либо закрывается (если
@@ -108,6 +89,7 @@ export const BottomSheet = ({
   bodyClassName,
   titleId,
   keepMounted = false,
+  disableScrollLock = false,
   slotProps,
 }: BottomSheetProps) => {
   const backdropClassName =
@@ -120,7 +102,7 @@ export const BottomSheet = ({
 
   // При каждом новом открытии сбрасываем возможные остатки inline-стилей:
   // после закрытия drag'ом на paper остаётся transform/transition.
-  // Если не почистить — следующий Slide-in начнётся с неправильной точки.
+  // Если не почистить — следующее открытие начнётся с неправильной точки.
   useEffect(() => {
     if (!open) return;
     const paper = paperRef.current;
@@ -187,13 +169,10 @@ export const BottomSheet = ({
       const shouldClose =
         delta > DRAG_CLOSE_DISTANCE_PX || velocity > DRAG_CLOSE_VELOCITY;
 
-      paper.style.transition = DRAG_SNAP_TRANSITION;
+      paper.style.transition = 'none';
+      paper.style.transform = '';
       if (shouldClose) {
-        // Оставляем текущий transform как "стартовую точку" — дальнейшую
-        // exit-анимацию до offscreen MUI Slide доиграет сам.
         onClose();
-      } else {
-        paper.style.transform = '';
       }
     },
     [onClose],
@@ -203,10 +182,11 @@ export const BottomSheet = ({
     <Dialog
       open={open}
       onClose={onClose}
-      TransitionComponent={SlideUp}
+      transitionDuration={0}
       fullWidth
       maxWidth={false}
       keepMounted={keepMounted}
+      disableScrollLock={disableScrollLock}
       aria-labelledby={title && titleId ? titleId : undefined}
       slotProps={{
         ...slotProps,
