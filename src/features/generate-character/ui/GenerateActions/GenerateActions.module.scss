@@ -47,8 +47,7 @@
 }
 
 // --- Generate: primary-CTA ---
-// Визуальный стиль (анимированная обводка, hover-fill, glow, sparkle) живёт
-// в shared'ом GradientButton (../GradientButton). Здесь — только layout:
+// Стиль CTA — в GradientButton. Здесь — только layout:
 // тянемся на остаток ряда и небольшой воздух от соседних icon-кнопок.
 .generateButton {
   flex: 1;

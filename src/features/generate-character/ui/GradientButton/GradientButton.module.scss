@@ -1,86 +1,83 @@
 @use '@shared/styles/tokens' as t;
 
-// Плавный graphite-sway по бордеру в режиме покоя; на hover тот же
-// градиент проявляется как плотная заливка и наружный glow. Магия рамки —
-// через mask-composite: exclude на ::before.
-@keyframes gradientSway {
-  0%,
-  100% {
-    background-position: 0% 50%;
+// Глобальные имена — чтобы анимация не терялась из‑за хэширования keyframes в CSS Modules
+// и всегда совпадала с `animation` на слоях.
+:global {
+  @keyframes penguGenBtnGradientSway {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
   }
-  50% {
-    background-position: 100% 50%;
-  }
-}
 
-@keyframes sparkleAnim {
-  0%,
-  40%,
-  80% {
-    opacity: 0.7;
-    transform: scale(1) rotate(0deg);
-  }
-  20% {
-    opacity: 1;
-    transform: scale(1.25) rotate(5deg);
-  }
-  60% {
-    opacity: 1;
-    transform: scale(1.25) rotate(-5deg);
+  @keyframes penguGenBtnSparkleAnim {
+    0%,
+    40%,
+    80% {
+      opacity: 0.7;
+      transform: scale(1) rotate(0deg);
+    }
+    20% {
+      opacity: 1;
+      transform: scale(1.25) rotate(5deg);
+    }
+    60% {
+      opacity: 1;
+      transform: scale(1.25) rotate(-5deg);
+    }
   }
 }
 
 .btn {
-  // Размеры через переменные с дефолтами — caller (через свой className на
-  // том же элементе) может переопределить без !important. .btn сам ничего
-  // в эти переменные не пишет, только читает с fallback'ом, поэтому порядок
-  // подгрузки CSS-модулей не влияет на результат.
   position: relative;
-  height: var(--btn-height, 36px);
+  isolation: isolate;
   min-width: 0 !important;
+  height: var(--btn-height, 36px) !important;
+  min-height: var(--btn-height, 36px) !important;
   padding: 0 var(--btn-padding-x, 22px) !important;
+  box-sizing: border-box !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   font-weight: 600;
   font-size: var(--btn-font-size, 13px);
   line-height: 1;
   letter-spacing: 0.4px;
   text-transform: none !important;
-  color: rgba(255, 255, 255, 0.78) !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  // Фон только у слоя .idleShimmer — так перелив не гасится стилями MUI на root.
+  background: transparent !important;
+  background-color: transparent !important;
   border: none !important;
   border-radius: t.$radius-pill !important;
-  // Собственного фона у корневого <button> нет: idle-шиммер живёт на .bgFill,
-  // а hover-заливка — на ::after.
-  background: transparent !important;
   overflow: visible !important;
   box-shadow: none !important;
   z-index: 0;
-  transition: color 0.4s ease, transform 0.4s ease !important;
+  cursor: pointer;
+  transition:
+    color 0.4s ease-in-out,
+    transform 0.4s ease-in-out !important;
 
   &::before {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: t.$radius-pill;
-    padding: 2.5px;
-    background: linear-gradient(
-      135deg,
-      rgba(var(--color-accent-secondary-rgb, 238, 238, 238), 0.55),
-      rgba(var(--color-accent-rgb, 163, 163, 163), 0.55),
-      rgba(var(--color-accent-secondary-rgb, 238, 238, 238), 0.55)
-    );
+    padding: 1.5px;
+    background: linear-gradient(135deg, #00000080, #ffffff80, #00000080);
     background-size: 200% 200%;
-    animation: gradientSway 3s ease infinite;
-    -webkit-mask: linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
+    animation: penguGenBtnGradientSway 3s ease infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    z-index: -1;
+    z-index: 1;
     pointer-events: none;
-    transition: opacity 0.4s ease;
+    opacity: 1;
+    transition: opacity 0.4s ease 0.2s;
   }
 
   &::after {
@@ -88,27 +85,35 @@
     position: absolute;
     inset: 0;
     border-radius: t.$radius-pill;
-    background: linear-gradient(135deg, var(--gradient-accent));
+    background: linear-gradient(135deg, #000000, #ffffff, #000000);
     background-size: 200% 200%;
-    animation: gradientSway 3s ease infinite;
-    opacity: 0.25;
-    transition: opacity 0.4s ease;
-    z-index: -1;
+    animation: penguGenBtnGradientSway 3s ease infinite;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+    z-index: 1;
     pointer-events: none;
   }
 
   &:hover {
     color: #fff !important;
-    transform: scale(1.04);
+    transform: scale(1.05);
+    background-color: transparent !important;
 
     &::before {
       opacity: 0;
+      transition: opacity 0.4s ease 0s;
     }
+
     &::after {
       opacity: 1;
     }
+
     .glow {
       opacity: 1;
+    }
+
+    .sparkle svg {
+      fill: #000;
     }
   }
 
@@ -128,44 +133,58 @@
   }
 }
 
-// Idle-заливка: отдельный слой, живёт под бордером (z:-2) и не страдает
-// от сброса background'а корневого <button>'а со стороны MUI.
-.bgFill {
+// Покой: анимированная заливка под рамкой и текстом (как в исходном HTML).
+.idleShimmer {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(
-    135deg,
-    rgba(var(--color-accent-secondary-rgb, 238, 238, 238), 0.22),
-    rgba(var(--color-accent-rgb, 163, 163, 163), 0.22),
-    rgba(var(--color-accent-secondary-rgb, 238, 238, 238), 0.22)
-  );
-  background-size: 200% 200%;
-  animation: gradientSway 3s ease infinite;
-  z-index: -2;
+  z-index: 0;
   pointer-events: none;
+  background: linear-gradient(135deg, #0000002a, #ffffff2a, #0000002a);
+  background-size: 200% 200%;
+  animation: penguGenBtnGradientSway 3s ease infinite;
+  will-change: background-position;
 }
 
-// Наружный размытый ореол — включается только на hover.
 .glow {
   position: absolute;
   inset: -2px;
   border-radius: t.$radius-pill;
-  background: linear-gradient(135deg, var(--gradient-accent));
+  background: linear-gradient(135deg, #000000, #ffffff, #000000);
   background-size: 200% 200%;
-  animation: gradientSway 3s ease infinite;
+  animation: penguGenBtnGradientSway 3s ease infinite;
   filter: blur(15px);
-  z-index: -3;
+  z-index: -1;
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.4s ease-in-out;
   pointer-events: none;
+  will-change: background-position;
+}
+
+.labelRow {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
 }
 
 .sparkle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.75;
-  animation: sparkleAnim 1.5s ease-in-out infinite;
-  color: currentColor;
+  opacity: 0.7;
+  animation: penguGenBtnSparkleAnim 1.5s ease-in-out infinite;
+}
+
+.sparkle svg {
+  width: var(--btn-sparkle-size, 16px);
+  height: var(--btn-sparkle-size, 16px);
+  display: block;
+  flex-shrink: 0;
+  transition: fill 0.4s ease-in-out;
+  fill: #fff;
 }

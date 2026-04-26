@@ -11,20 +11,12 @@ interface GradientButtonProps extends Omit<ButtonProps, 'variant'> {
 }
 
 /**
- *
- * Слои внутри:
- *  - .glow      — наружный размытый ореол (виден только на hover);
- *  - .bgFill    — анимированный idle-фон (живёт под бордером);
- *  - ::before   — сама градиентная обводка-рамка (mask-composite: exclude);
- *  - ::after    — плотная заливка, проявляется на hover;
- *  - .sparkle   — пульсирующая искра слева;
- *  - children   — лейбл.
- *
- * Размеры параметризованы CSS-переменными, чтобы caller мог переопределить
- * без `!important`-войн с MUI:
+ * CTA: чёрно-белый градиентный sway, обводка через mask, hover-fill и glow.
+ * Размеры через CSS-переменные на том же элементе (className):
  *  - `--btn-height` (default 36px)
  *  - `--btn-padding-x` (default 22px)
  *  - `--btn-font-size` (default 13px)
+ *  - `--btn-sparkle-size` (default 16px)
  */
 export const GradientButton = ({
   children,
@@ -34,18 +26,17 @@ export const GradientButton = ({
 }: GradientButtonProps) => (
   <Button {...rest} disableRipple className={cn(styles.btn, className)}>
     <span className={styles.glow} aria-hidden />
-    <span className={styles.bgFill} aria-hidden />
-    {showSparkle && (
-      <span className={styles.sparkle} aria-hidden>
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M10 2l1.2 5.5L17 9l-5.8 1.5L10 16l-1.2-5.5L3 9l5.8-1.5z" />
-          <path
-            d="M5 2l.5 2L8 5l-2.5.5L5 8l-.5-2.5L2 5l2.5-.5z"
-            opacity=".7"
-          />
-        </svg>
-      </span>
-    )}
-    {children}
+    <span className={styles.idleShimmer} aria-hidden />
+    <span className={styles.labelRow}>
+      {showSparkle && (
+        <span className={styles.sparkle} aria-hidden>
+          <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 2l1.2 5.5L17 9l-5.8 1.5L10 16l-1.2-5.5L3 9l5.8-1.5z" />
+            <path d="M5 2l.5 2L8 5l-2.5.5L5 8l-.5-2.5L2 5l2.5-.5z" opacity=".7" />
+          </svg>
+        </span>
+      )}
+      {children}
+    </span>
   </Button>
 );
