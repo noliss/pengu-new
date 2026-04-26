@@ -2,10 +2,12 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 import { Page, PageHeader } from '@shared/ui';
+import { env } from '@shared/config/env';
 import { ConnectWalletButton } from '@features/connect-wallet';
 import { useAppSelector } from '@shared/store';
 import { selectUser } from '@entities/user';
@@ -75,6 +77,10 @@ export const ProfilePage = () => {
               onClick={() => setSettingsOpen(true)}
             />
           </Box>
+
+          <Typography variant="caption" component="p" className={styles.version}>
+            {t('profile.appVersion', { version: `v${env.app.version}` })}
+          </Typography>
         </Box>
       </Container>
 

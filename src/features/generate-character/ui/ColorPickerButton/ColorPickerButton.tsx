@@ -1,5 +1,14 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
-import { HexColorPicker } from 'react-colorful';
+import {
+  lazy,
+  memo,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ChangeEvent,
+} from 'react';
 import Popover from '@mui/material/Popover';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
@@ -123,6 +132,10 @@ const HSL_CHANNELS: ReadonlyArray<{ key: keyof HslStrings; label: string; aria: 
 
 const HSL_MAX: Record<keyof HslStrings, number> = { h: 360, s: 100, l: 100 };
 
+const LazyHexColorPicker = lazy(() =>
+  import('react-colorful').then((m) => ({ default: m.HexColorPicker })),
+);
+
 interface ColorPickerButtonProps {
   /** Список пресет-цветов */
   colors: string[];
@@ -142,7 +155,7 @@ interface ColorPickerButtonProps {
 // Задержка между движением picker'а и применением цвета в redux/persist.
 const COLOR_COMMIT_DELAY_MS = 140;
 
-export const ColorPickerButton = ({
+const ColorPickerButtonComponent = ({
   colors,
   selectedColor,
   onColorSelect,
@@ -374,9 +387,6 @@ export const ColorPickerButton = ({
         onClose={closePopover}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        // Pre-mount: страница генерации горячая, swatches должны
-        // прорастать без задержки. Popover лёгкий, держать его в DOM дёшево.
-        keepMounted
         slotProps={{
           paper: {
             className: styles.popoverPaper,
@@ -420,14 +430,12 @@ export const ColorPickerButton = ({
         // Backdrop прозрачный: sheet полупрозрачный, хочется видеть пингвина
         // позади, чтобы на лету оценивать выбранный цвет.
         backdrop="transparent"
-        // HexColorPicker — самый тяжёлый dialog на странице (canvas-style
-        // picker + drag-to-close + дебаунс). Pre-mount убирает заметный
-        // тормоз при первом «свой цвет» на слабых устройствах.
-        keepMounted
         bodyClassName={styles.compactBody}
       >
         <Box className={styles.pickerWrapper}>
-          <HexColorPicker color={liveColor} onChange={handlePickerChange} />
+          <Suspense fallback={null}>
+            <LazyHexColorPicker color={liveColor} onChange={handlePickerChange} />
+          </Suspense>
         </Box>
 
 
@@ -536,3 +544,5 @@ export const ColorPickerButton = ({
     </>
   );
 };
+
+export const ColorPickerButton = memo(ColorPickerButtonComponent);

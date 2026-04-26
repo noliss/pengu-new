@@ -43,6 +43,7 @@ export const ru = {
     myCharacters: 'Мои персонажи',
     myCharactersHint: 'История генераций',
     settings: 'Настройки',
+    appVersion: 'Версия {{version}}',
     settingsMock: {
       preferences: 'Предпочтения',
       notifications: 'Уведомления',

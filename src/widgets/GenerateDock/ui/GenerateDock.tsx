@@ -134,12 +134,13 @@ export const GenerateDock = ({ onGenerate }: GenerateDockProps) => {
                   renderItem={renderSvgItem}
                 />
               </Box>
-              <ColorPickerButton
-                colors={DEFAULT_COLORS}
-                selectedColor={selectedColor}
-                onColorSelect={handleColorSelect}
-                disabled={!editorVisible}
-              />
+              {editorVisible && (
+                <ColorPickerButton
+                  colors={DEFAULT_COLORS}
+                  selectedColor={selectedColor}
+                  onColorSelect={handleColorSelect}
+                />
+              )}
             </Box>
           </Box>
         </Box>

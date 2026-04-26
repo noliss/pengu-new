@@ -1,12 +1,12 @@
 {
   "name": "pengu-react-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "homepage": "https://noliq.github.io/pengu-new",
   "scripts": {
     "dev": "vite",
-    "predeploy": "npm run build",
+    "predeploy": "node scripts/bump-patch-for-deploy.mjs && npm run build",
     "deploy": "gh-pages -d build",
     "dev:https": "vite --host",
     "build": "tsc -b && vite build",

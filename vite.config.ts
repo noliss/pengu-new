@@ -1,10 +1,18 @@
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import mkcert from 'vite-plugin-mkcert'
 import path from 'node:path'
 
+const pkgPath = path.join(path.dirname(fileURLToPath(import.meta.url)), 'package.json')
+const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8')) as { version: string }
+
 // https://vitejs.dev/config/
 export default defineConfig({
+  define: {
+    'import.meta.env.VITE_APP_VERSION': JSON.stringify(pkg.version),
+  },
   plugins: [
     react(),
     mkcert(),

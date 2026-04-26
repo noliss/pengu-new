@@ -53,6 +53,11 @@ export const env = {
     environment: readString('VITE_SENTRY_ENVIRONMENT', import.meta.env.MODE),
     enabled: readString('VITE_SENTRY_DSN').length > 0,
   },
+
+  /** Версия из package.json, подставляется при сборке (см. vite.config). */
+  app: {
+    version: readString('VITE_APP_VERSION', '0.0.0'),
+  },
 } as const;
 
 export type Env = typeof env;

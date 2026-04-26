@@ -43,6 +43,7 @@ export const en = {
     myCharacters: 'My characters',
     myCharactersHint: 'Generation history',
     settings: 'Settings',
+    appVersion: 'Version {{version}}',
     settingsMock: {
       preferences: 'Preferences',
       notifications: 'Notifications',
