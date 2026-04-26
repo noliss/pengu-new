@@ -46,7 +46,7 @@ export const GeneratePage = () => {
         <Box className={styles.stage}>
           <Box className={styles.stageGlow} aria-hidden />
           <Box className={styles.stageInner}>
-            <LottieAnimation animationData={penguAnimation} loop autoplay />
+            <LottieAnimation animationData={penguAnimation} />
           </Box>
           <Box className={styles.stageShadow} aria-hidden />
         </Box>

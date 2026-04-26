@@ -14,15 +14,43 @@
   box-sizing: border-box;
 }
 
+.actions {
+  margin-top: 10px;
+}
+
+.editorShell {
+  // Атрибутный редактор всегда смонтирован: Embla и SVG-картинки прогреваются
+  // сразу, а при выборе части тела мы только раскрываем уже готовый блок.
+  // Это убирает микролаг от mount/reInit в момент клика.
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  overflow: hidden;
+  transition:
+    grid-template-rows 0.22s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.16s ease,
+    transform 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: grid-template-rows, opacity, transform;
+}
+
+.editorShellVisible {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.editorClip {
+  min-height: 0;
+  overflow: hidden;
+}
+
 .editor {
   display: flex;
   flex-direction: column;
-  // padding-top анимируется вместе с высотой Collapse и плавно уходит в 0.
   padding: 10px 0 0;
-}
-
-.actions {
-  margin-top: 10px;
 }
 
 .editorRow {

@@ -1,3 +1,4 @@
+import { memo, type CSSProperties } from 'react';
 import Lottie from 'lottie-react';
 import cn from 'classnames';
 import styles from './LottieAnimation.module.scss';
@@ -12,7 +13,7 @@ interface LottieAnimationProps {
   height?: number | string;
 }
 
-export const LottieAnimation = ({
+const LottieAnimationComponent = ({
   animationData,
   loop = true,
   autoplay = true,
@@ -21,7 +22,7 @@ export const LottieAnimation = ({
   width,
   height,
 }: LottieAnimationProps) => {
-  const inlineStyle: React.CSSProperties = {};
+  const inlineStyle: CSSProperties = {};
   if (width !== undefined) inlineStyle.width = typeof width === 'number' ? `${width}px` : width;
   if (height !== undefined) inlineStyle.height = typeof height === 'number' ? `${height}px` : height;
 
@@ -38,3 +39,5 @@ export const LottieAnimation = ({
     </div>
   );
 };
+
+export const LottieAnimation = memo(LottieAnimationComponent);

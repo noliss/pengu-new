@@ -39,7 +39,7 @@
   border-radius: t.$radius-lg;
   background: t.$color-accent-soft;
   color: t.$color-accent;
-  border: 1px solid rgba(0, 229, 255, 0.18);
+  border: 1px solid rgba(var(--color-accent-rgb, 163, 163, 163), 0.18);
 
   :global(.MuiSvgIcon-root) {
     font-size: 1.2rem;

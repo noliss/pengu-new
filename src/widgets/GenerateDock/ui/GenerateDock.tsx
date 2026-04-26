@@ -1,14 +1,14 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
+import cn from 'classnames';
 import { CardSlider } from '@shared/ui';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import {
   DEFAULT_COLORS,
+  type CharacterPart,
   MOCK_CHARACTER_PARTS,
   clearPartSelection,
   selectActivePartId,
-  selectCharacterSelections,
   setActivePartId,
   setPartSelection,
 } from '@entities/character';
@@ -24,6 +24,8 @@ const svgItems = Object.entries(svgModules)
   })
   .sort((a, b) => Number(a.id) - Number(b.id));
 
+type SvgItem = (typeof svgItems)[number];
+
 interface GenerateDockProps {
   onGenerate?: () => void;
 }
@@ -36,14 +38,20 @@ interface GenerateDockProps {
 export const GenerateDock = ({ onGenerate }: GenerateDockProps) => {
   const dispatch = useAppDispatch();
   const activePartId = useAppSelector(selectActivePartId);
-  const selections = useAppSelector(selectCharacterSelections);
+  const activeSelection = useAppSelector((state) =>
+    activePartId ? state.character.draft.selections[activePartId] : undefined,
+  );
 
   const partIds = useMemo(() => MOCK_CHARACTER_PARTS.map((p) => p.id), []);
   const svgIds = useMemo(() => svgItems.map((s) => s.id), []);
 
-  const activeSelection = activePartId ? selections[activePartId] : undefined;
   const selectedSvgId = activeSelection?.svgId ?? null;
   const selectedColor = activeSelection?.color ?? null;
+  const selectedColorRef = useRef(selectedColor);
+
+  useEffect(() => {
+    selectedColorRef.current = selectedColor;
+  }, [selectedColor]);
 
   // Видимость редактора — чистое производное от activePartId в сторе.
   // Любое программное изменение активной части (выбор chip'а, Random, undo,
@@ -65,10 +73,14 @@ export const GenerateDock = ({ onGenerate }: GenerateDockProps) => {
         return;
       }
       dispatch(
-        setPartSelection({ partId: activePartId, svgId, color: selectedColor ?? null }),
+        setPartSelection({
+          partId: activePartId,
+          svgId,
+          color: selectedColorRef.current ?? null,
+        }),
       );
     },
-    [dispatch, activePartId, selectedColor],
+    [dispatch, activePartId],
   );
 
   const handleColorSelect = useCallback(
@@ -79,6 +91,21 @@ export const GenerateDock = ({ onGenerate }: GenerateDockProps) => {
     [dispatch, activePartId, selectedSvgId],
   );
 
+  const renderPartItem = useCallback((item: CharacterPart) => item.label, []);
+
+  const renderSvgItem = useCallback(
+    (item: SvgItem) => (
+      <img
+        src={item.src}
+        alt={`SVG ${item.id}`}
+        loading="eager"
+        decoding="async"
+        draggable={false}
+      />
+    ),
+    [],
+  );
+
   return (
     <Box className={styles.dock} role="region" aria-label="Панель генерации персонажа">
       <CardSlider
@@ -86,29 +113,37 @@ export const GenerateDock = ({ onGenerate }: GenerateDockProps) => {
         selectedId={activePartId}
         onSelect={handlePartSelect}
         itemVariant="text"
-        renderItem={(item) => item.label}
+        renderItem={renderPartItem}
       />
 
-      <Collapse in={editorVisible} timeout={260} unmountOnExit>
-        <Box className={styles.editor} aria-label="Редактор части персонажа">
-          <Box className={styles.editorRow}>
-            <Box className={styles.editorSlider}>
-              <CardSlider
-                items={svgItems}
-                selectedId={selectedSvgId}
-                onSelect={handleSvgSelect}
-                itemVariant="image"
-                renderItem={(item) => <img src={item.src} alt={`SVG ${item.id}`} />}
+      <Box
+        className={cn(styles.editorShell, {
+          [styles.editorShellVisible]: editorVisible,
+        })}
+        aria-hidden={!editorVisible}
+      >
+        <Box className={styles.editorClip}>
+          <Box className={styles.editor} aria-label="Редактор части персонажа">
+            <Box className={styles.editorRow}>
+              <Box className={styles.editorSlider}>
+                <CardSlider
+                  items={svgItems}
+                  selectedId={selectedSvgId}
+                  onSelect={handleSvgSelect}
+                  itemVariant="image"
+                  renderItem={renderSvgItem}
+                />
+              </Box>
+              <ColorPickerButton
+                colors={DEFAULT_COLORS}
+                selectedColor={selectedColor}
+                onColorSelect={handleColorSelect}
+                disabled={!editorVisible}
               />
             </Box>
-            <ColorPickerButton
-              colors={DEFAULT_COLORS}
-              selectedColor={selectedColor}
-              onColorSelect={handleColorSelect}
-            />
           </Box>
         </Box>
-      </Collapse>
+      </Box>
 
       <Box className={styles.actions}>
         <GenerateActions

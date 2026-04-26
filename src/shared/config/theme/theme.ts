@@ -158,8 +158,7 @@ export const createAppTheme = (): Theme =>
           {
             props: { variant: 'glassDestructive' },
             style: {
-              // Только красный спектр — без магенты, иначе на короткой кнопке
-              // визуально сливается с glassPrimary (cyan→magenta).
+              // Только красный спектр, чтобы не сливаться с neutral glassPrimary.
               background:
                 'linear-gradient(145deg, #b80028 0%, #ff3b5c 42%, #ff7a8a 100%)',
               border: '1px solid rgba(255, 130, 145, 0.55)',

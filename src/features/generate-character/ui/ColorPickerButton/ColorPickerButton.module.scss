@@ -170,15 +170,15 @@
   }
 
   &:focus-visible {
-    outline: 1px solid rgba(0, 229, 255, 0.55);
+    outline: 1px solid rgba(var(--color-accent-rgb, 163, 163, 163), 0.55);
     outline-offset: 1px;
   }
 }
 
 .formatTabActive {
-  background: rgba(0, 229, 255, 0.16);
+  background: rgba(var(--color-accent-rgb, 163, 163, 163), 0.16);
   color: t.$color-accent;
-  box-shadow: 0 0 12px rgba(0, 229, 255, 0.18);
+  box-shadow: 0 0 12px rgba(var(--color-accent-rgb, 163, 163, 163), 0.18);
 }
 
 // Строка hex-управления: pill с цветом/HEX/copy + отдельная apply-кнопка справа.
@@ -320,7 +320,7 @@
   }
 }
 
-// Apply (галочка). Лёгкая cyan-soft круглая кнопка снаружи hex-pill —
+// Apply (галочка). Лёгкая strict-soft круглая кнопка снаружи hex-pill —
 // читается как «принять/готово», не перебивая swatch и сам HEX.
 .hexApply {
   flex-shrink: 0;
@@ -329,13 +329,13 @@
   padding: 0 !important;
   color: t.$color-accent !important;
   background: t.$color-accent-soft !important;
-  border: 1px solid rgba(0, 229, 255, 0.3) !important;
-  box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);
+  border: 1px solid rgba(var(--color-accent-rgb, 163, 163, 163), 0.3) !important;
+  box-shadow: 0 0 10px rgba(var(--color-accent-rgb, 163, 163, 163), 0.15);
   transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.18s ease;
 
   &:hover {
-    background: rgba(0, 229, 255, 0.18) !important;
-    box-shadow: 0 0 14px rgba(0, 229, 255, 0.28);
+    background: rgba(var(--color-accent-rgb, 163, 163, 163), 0.18) !important;
+    box-shadow: 0 0 14px rgba(var(--color-accent-rgb, 163, 163, 163), 0.28);
   }
 
   &:active {

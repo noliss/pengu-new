@@ -61,8 +61,8 @@
     &:global(.Mui-selected) {
       background: t.$color-accent-soft;
       color: t.$color-accent;
-      border-color: rgba(0, 229, 255, 0.35) !important;
-      box-shadow: 0 0 12px rgba(0, 229, 255, 0.12);
+      border-color: rgba(var(--color-accent-rgb, 163, 163, 163), 0.35) !important;
+      box-shadow: 0 0 12px rgba(var(--color-accent-rgb, 163, 163, 163), 0.12);
 
       &:hover {
         background: t.$color-accent-soft;

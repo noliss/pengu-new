@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
@@ -30,7 +30,12 @@ interface GenerateActionsProps {
   onGenerate?: () => void;
 }
 
-export const GenerateActions = ({ partIds, svgIds, colors, onGenerate }: GenerateActionsProps) => {
+const GenerateActionsComponent = ({
+  partIds,
+  svgIds,
+  colors,
+  onGenerate,
+}: GenerateActionsProps) => {
   const dispatch = useAppDispatch();
   const name = useAppSelector(selectCharacterName);
   const type = useAppSelector(selectGenerationType);
@@ -129,3 +134,5 @@ export const GenerateActions = ({ partIds, svgIds, colors, onGenerate }: Generat
     </>
   );
 };
+
+export const GenerateActions = memo(GenerateActionsComponent);

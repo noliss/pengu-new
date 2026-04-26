@@ -40,26 +40,26 @@
   background:
     radial-gradient(
       ellipse at 50% 55%,
-      rgba(0, 229, 255, 0.22) 0%,
-      rgba(0, 229, 255, 0.07) 40%,
+      rgba(var(--color-accent-rgb, 163, 163, 163), 0.22) 0%,
+      rgba(var(--color-accent-rgb, 163, 163, 163), 0.07) 40%,
       transparent 72%
     ),
-    // Верхние "рефлексы" (cyan слева, magenta справа).
+    // Верхние рефлексы в рамках strict graphite.
     radial-gradient(
       ellipse at 25% 18%,
-      rgba(0, 229, 255, 0.22) 0%,
-      rgba(0, 229, 255, 0.05) 38%,
+      rgba(var(--color-accent-rgb, 163, 163, 163), 0.22) 0%,
+      rgba(var(--color-accent-rgb, 163, 163, 163), 0.05) 38%,
       transparent 68%
     ),
     radial-gradient(
       ellipse at 75% 18%,
-      rgba(255, 46, 196, 0.18) 0%,
+      rgba(var(--color-accent-secondary-rgb, 238, 238, 238), 0.18) 0%,
       transparent 58%
     ),
-    // Нижняя cyan "подсветка пола".
+    // Нижняя сдержанная подсветка пола.
     radial-gradient(
       ellipse at 50% 102%,
-      rgba(0, 229, 255, 0.22) 0%,
+      rgba(var(--color-accent-rgb, 163, 163, 163), 0.22) 0%,
       transparent 62%
     );
   pointer-events: none;

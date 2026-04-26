@@ -24,6 +24,15 @@ export interface InitOptions {
 }
 
 const MOBILE_PLATFORMS: TgPlatform[] = ['ios', 'android', 'android_x'];
+const ERUDA_BUTTON_SIZE = 50;
+const ERUDA_SAFE_OFFSET = 14;
+
+const positionEruda = (eruda: { position: (point: { x: number; y: number }) => void }) => {
+  eruda.position({
+    x: Math.max(ERUDA_SAFE_OFFSET, window.innerWidth - ERUDA_BUTTON_SIZE - ERUDA_SAFE_OFFSET),
+    y: Math.max(ERUDA_SAFE_OFFSET, window.innerHeight - ERUDA_BUTTON_SIZE - ERUDA_SAFE_OFFSET),
+  });
+};
 
 /**
  * Инициализация SDK, Telegram viewport, store-метаданных.
@@ -36,7 +45,11 @@ export async function init(options: InitOptions): Promise<void> {
   if (options.eruda) {
     void import('eruda').then(({ default: eruda }) => {
       eruda.init();
-      eruda.position({ x: window.innerWidth - 50, y: 0 });
+      positionEruda(eruda);
+      window.addEventListener('resize', () => positionEruda(eruda), { passive: true });
+      window.addEventListener('orientationchange', () => {
+        window.setTimeout(() => positionEruda(eruda), 250);
+      });
     });
   }
 

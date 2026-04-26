@@ -42,8 +42,7 @@
   border-top: 1px solid t.$color-glass-border-soft;
   box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.4);
 
-  // Cyan-подсветка вдоль верхней грани — аккуратный «неоновый след»,
-  // объединяет бар с общей palette'ой проекта.
+  // Сдержанная подсветка вдоль верхней грани объединяет бар с общей палитрой.
   &::before {
     content: '';
     position: absolute;
@@ -54,7 +53,7 @@
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(0, 229, 255, 0.35) 50%,
+      rgba(var(--color-accent-rgb, 163, 163, 163), 0.35) 50%,
       transparent 100%
     );
     pointer-events: none;
@@ -88,8 +87,8 @@
       border-radius: 999px;
       background: t.$color-accent-soft;
       box-shadow:
-        inset 0 0 0 1px rgba(0, 229, 255, 0.3),
-        0 0 14px rgba(0, 229, 255, 0.22);
+        inset 0 0 0 1px rgba(var(--color-accent-rgb, 163, 163, 163), 0.3),
+        0 0 14px rgba(var(--color-accent-rgb, 163, 163, 163), 0.22);
       transform: translate(-50%, -50%) scale(0.8);
       opacity: 0;
       transition:
@@ -125,7 +124,7 @@
   }
 
   :global(.MuiBottomNavigationAction-root.Mui-selected .MuiSvgIcon-root) {
-    // На активном тёмный halo сменяется на cyan-glow — чистый акцент.
-    filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.65));
+    // На активном тёмный halo сменяется на strict-glow.
+    filter: drop-shadow(0 0 6px rgba(var(--color-accent-rgb, 163, 163, 163), 0.65));
   }
 }

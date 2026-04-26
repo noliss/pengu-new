@@ -36,7 +36,7 @@
 
 .title {
   color: t.$color-text-primary;
-  text-shadow: 0 0 6px rgba(0, 229, 255, 0.45);
+  text-shadow: 0 0 6px rgba(var(--color-accent-rgb, 163, 163, 163), 0.45);
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;

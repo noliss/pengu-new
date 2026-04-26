@@ -61,6 +61,7 @@ export const ProfileSettingsDialog = ({ open, onClose }: ProfileSettingsDialogPr
           labelPlacement="start"
           className={styles.switchRow}
         />
+
       </Box>
 
       <Box className={styles.group}>

@@ -1,6 +1,6 @@
 @use '@shared/styles/tokens' as t;
 
-// Плавный magenta/cyan-sway по бордеру в режиме покоя; на hover тот же
+// Плавный graphite-sway по бордеру в режиме покоя; на hover тот же
 // градиент проявляется как плотная заливка и наружный glow. Магия рамки —
 // через mask-composite: exclude на ::before.
 @keyframes gradientSway {
@@ -67,9 +67,9 @@
     padding: 2.5px;
     background: linear-gradient(
       135deg,
-      rgba(224, 64, 251, 0.55),
-      rgba(0, 229, 255, 0.55),
-      rgba(224, 64, 251, 0.55)
+      rgba(var(--color-accent-secondary-rgb, 238, 238, 238), 0.55),
+      rgba(var(--color-accent-rgb, 163, 163, 163), 0.55),
+      rgba(var(--color-accent-secondary-rgb, 238, 238, 238), 0.55)
     );
     background-size: 200% 200%;
     animation: gradientSway 3s ease infinite;
@@ -88,7 +88,7 @@
     position: absolute;
     inset: 0;
     border-radius: t.$radius-pill;
-    background: linear-gradient(135deg, #e040fb, #00e5ff, #e040fb);
+    background: linear-gradient(135deg, var(--gradient-accent));
     background-size: 200% 200%;
     animation: gradientSway 3s ease infinite;
     opacity: 0.25;
@@ -136,9 +136,9 @@
   border-radius: inherit;
   background: linear-gradient(
     135deg,
-    rgba(224, 64, 251, 0.22),
-    rgba(0, 229, 255, 0.22),
-    rgba(224, 64, 251, 0.22)
+    rgba(var(--color-accent-secondary-rgb, 238, 238, 238), 0.22),
+    rgba(var(--color-accent-rgb, 163, 163, 163), 0.22),
+    rgba(var(--color-accent-secondary-rgb, 238, 238, 238), 0.22)
   );
   background-size: 200% 200%;
   animation: gradientSway 3s ease infinite;
@@ -151,7 +151,7 @@
   position: absolute;
   inset: -2px;
   border-radius: t.$radius-pill;
-  background: linear-gradient(135deg, #e040fb, #00e5ff, #e040fb);
+  background: linear-gradient(135deg, var(--gradient-accent));
   background-size: 200% 200%;
   animation: gradientSway 3s ease infinite;
   filter: blur(15px);

@@ -26,7 +26,7 @@
   &:hover {
     color: t.$color-accent !important;
     background: t.$color-accent-soft !important;
-    border-color: rgba(0, 229, 255, 0.3) !important;
+    border-color: rgba(var(--color-accent-rgb, 163, 163, 163), 0.3) !important;
   }
 }
 
@@ -36,7 +36,7 @@
   font-size: 2.2rem !important;
   border: 2px solid t.$color-glass-border-strong;
   box-shadow:
-    0 0 0 1px rgba(0, 229, 255, 0.08),
+    0 0 0 1px rgba(var(--color-accent-rgb, 163, 163, 163), 0.08),
     0 10px 26px rgba(0, 0, 0, 0.55);
 }
 
@@ -60,7 +60,7 @@
   font-size: 0.85rem;
 }
 
-// Бейдж роли — компактная pill. Вариант `premium` подсвечивается cyan-акцентом,
+// Бейдж роли — компактная pill. Вариант `premium` подсвечивается strict-акцентом,
 // дефолтный `user` — нейтральный glass, чтобы не спорить с premium визуально.
 .roleBadge {
   display: inline-flex;
@@ -79,9 +79,9 @@
 
   &[data-variant='premium'] {
     background: t.$color-accent-soft;
-    border-color: rgba(0, 229, 255, 0.35);
+    border-color: rgba(var(--color-accent-rgb, 163, 163, 163), 0.35);
     color: t.$color-accent;
-    box-shadow: 0 0 14px rgba(0, 229, 255, 0.15);
+    box-shadow: 0 0 14px rgba(var(--color-accent-rgb, 163, 163, 163), 0.15);
   }
 }
 

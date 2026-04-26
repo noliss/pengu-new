@@ -3,36 +3,35 @@
  * Единый источник правды для цветов/радиусов/теней — используется и в MUI-теме,
  * и в SCSS через CSS-переменные (см. shared/styles/tokens.scss и shared/styles/global.css).
  *
- * При изменении — обнови также tokens.scss.
- *
- * Палитра: Neon Cyber Noir (NFT / liquid glass).
+ * Палитра: Strict Graphite.
+ * При изменении — обнови также tokens.scss/global.css.
  */
 
 export const palette = {
-  bg: '#010204',
-  bgSoft: '#06070c',
-  textPrimary: '#f5fbff',
-  textSecondary: 'rgba(225, 240, 255, 0.7)',
-  textMuted: 'rgba(200, 215, 230, 0.46)',
+  bg: '#000000',
+  bgSoft: '#090a0c',
+  textPrimary: '#f4f4f5',
+  textSecondary: 'rgba(185, 188, 195, 0.74)',
+  textMuted: 'rgba(128, 132, 140, 0.52)',
 
-  glassBg: 'rgba(160, 220, 255, 0.06)',
-  glassBgStrong: 'rgba(160, 220, 255, 0.12)',
-  glassBgSoft: 'rgba(160, 220, 255, 0.03)',
-  glassBorder: 'rgba(190, 230, 255, 0.18)',
-  glassBorderSoft: 'rgba(190, 230, 255, 0.08)',
-  glassBorderStrong: 'rgba(190, 230, 255, 0.28)',
+  glassBg: 'rgba(255, 255, 255, 0.045)',
+  glassBgStrong: 'rgba(255, 255, 255, 0.085)',
+  glassBgSoft: 'rgba(255, 255, 255, 0.025)',
+  glassBorder: 'rgba(255, 255, 255, 0.12)',
+  glassBorderSoft: 'rgba(255, 255, 255, 0.065)',
+  glassBorderStrong: 'rgba(255, 255, 255, 0.2)',
 
-  overlay: 'rgba(0, 0, 0, 0.45)',
-  overlayStrong: 'rgba(0, 0, 0, 0.68)',
+  overlay: 'rgba(0, 0, 0, 0.56)',
+  overlayStrong: 'rgba(0, 0, 0, 0.78)',
 
-  accent: '#00e5ff',
-  accentStrong: '#22eeff',
-  accentDeep: '#0099b8',
+  accent: '#a3a3a3',
+  accentStrong: '#d4d4d4',
+  accentDeep: '#5f5f5f',
 
-  accentSecondary: '#ff2ec4',
+  accentSecondary: '#eeeeee',
 
-  danger: '#ff3b5c',
-  success: '#3df5d3',
+  danger: '#d96773',
+  success: '#8fc7b1',
 } as const;
 
 export const radii = {
@@ -49,9 +48,9 @@ export const shadows = {
   cardHover: '0 8px 30px rgba(0, 0, 0, 0.8)',
   panel: '0 -8px 32px rgba(0, 0, 0, 0.78)',
   soft: '0 2px 8px rgba(0, 0, 0, 0.55)',
-  accentGlow: '0 6px 22px rgba(0, 229, 255, 0.5)',
+  accentGlow: '0 4px 16px rgba(163, 163, 163, 0.28)',
   accentGlowStrong:
-    '0 8px 28px rgba(0, 229, 255, 0.65), 0 4px 20px rgba(255, 46, 196, 0.4)',
+    '0 8px 24px rgba(163, 163, 163, 0.38), 0 4px 16px rgba(238, 238, 238, 0.22)',
 } as const;
 
 export const blurs = {

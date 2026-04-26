@@ -1,4 +1,12 @@
-import { useEffect, useCallback, useState, type ReactNode } from 'react';
+import {
+  memo,
+  useEffect,
+  useCallback,
+  useMemo,
+  useState,
+  type ReactNode,
+  type WheelEvent,
+} from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import cn from 'classnames';
@@ -24,7 +32,7 @@ export interface CardSliderProps<T extends CardSliderItem> {
  * Горизонтальный слайдер на базе embla-carousel.
  * Controlled: selectedId приходит извне, onSelect вызывается только по клику.
  */
-export const CardSlider = <T extends CardSliderItem>({
+const CardSliderComponent = <T extends CardSliderItem>({
   items,
   selectedId = null,
   configuredIds,
@@ -33,10 +41,14 @@ export const CardSlider = <T extends CardSliderItem>({
   itemVariant = 'text',
   className,
 }: CardSliderProps<T>) => {
-  const configuredSet = configuredIds ? new Set(configuredIds) : null;
+  const configuredSet = useMemo(
+    () => (configuredIds ? new Set(configuredIds) : null),
+    [configuredIds],
+  );
+  const wheelPlugins = useMemo(() => [WheelGesturesPlugin()], []);
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { axis: 'x', dragFree: true, containScroll: 'trimSnaps' },
-    [WheelGesturesPlugin()],
+    wheelPlugins,
   );
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
@@ -59,7 +71,7 @@ export const CardSlider = <T extends CardSliderItem>({
   }, [emblaApi, updateScrollState]);
 
   const handleWheel = useCallback(
-    (e: React.WheelEvent) => {
+    (e: WheelEvent<HTMLDivElement>) => {
       if (!emblaApi) return;
       e.preventDefault();
       if (e.deltaY > 0) emblaApi.scrollNext();
@@ -116,3 +128,5 @@ export const CardSlider = <T extends CardSliderItem>({
     </div>
   );
 };
+
+export const CardSlider = memo(CardSliderComponent) as typeof CardSliderComponent;

@@ -1,34 +1,35 @@
 // Дизайн-токены для SCSS. Должны совпадать с shared/config/theme/tokens.ts.
 // При изменении — обнови оба файла.
 
-// Цвета
-$color-bg: #010204;
-$color-bg-soft: #06070c;
-$color-text-primary: #f5fbff;
-$color-text-secondary: rgba(225, 240, 255, 0.7);
-$color-text-muted: rgba(200, 215, 230, 0.46);
+// Цвета. В runtime читаются CSS-переменные из global.css; fallback'и ниже —
+// единственная палитра Strict Graphite.
+$color-bg: var(--color-bg, #000000);
+$color-bg-soft: var(--color-bg-soft, #090a0c);
+$color-text-primary: var(--color-text-primary, #f4f4f5);
+$color-text-secondary: var(--color-text-secondary, rgba(185, 188, 195, 0.74));
+$color-text-muted: var(--color-text-muted, rgba(128, 132, 140, 0.52));
 
-// Стекло — чуть тоньше по альфе, чтобы подложка читалась как "почти чёрная"
-$color-glass-bg: rgba(160, 220, 255, 0.06);
-$color-glass-bg-strong: rgba(160, 220, 255, 0.12);
-$color-glass-bg-soft: rgba(160, 220, 255, 0.03);
-$color-glass-border: rgba(190, 230, 255, 0.18);
-$color-glass-border-soft: rgba(190, 230, 255, 0.08);
-$color-glass-border-strong: rgba(190, 230, 255, 0.28);
+// Стекло — строгий почти монохромный graphite.
+$color-glass-bg: var(--color-glass-bg, rgba(255, 255, 255, 0.045));
+$color-glass-bg-strong: var(--color-glass-bg-strong, rgba(255, 255, 255, 0.085));
+$color-glass-bg-soft: var(--color-glass-bg-soft, rgba(255, 255, 255, 0.025));
+$color-glass-border: var(--color-glass-border, rgba(255, 255, 255, 0.12));
+$color-glass-border-soft: var(--color-glass-border-soft, rgba(255, 255, 255, 0.065));
+$color-glass-border-strong: var(
+  --color-glass-border-strong,
+  rgba(255, 255, 255, 0.2)
+);
 
-$color-overlay: rgba(0, 0, 0, 0.45);
-$color-overlay-strong: rgba(0, 0, 0, 0.68);
+$color-overlay: var(--color-overlay, rgba(0, 0, 0, 0.56));
+$color-overlay-strong: var(--color-overlay-strong, rgba(0, 0, 0, 0.78));
 
-// Акценты: cyan (основной) + magenta (вторичный).
-// Варианты *-strong / *-deep / *-secondary-soft живут только в MUI-теме
-// (shared/config/theme/tokens.ts), в SCSS пока не востребованы — добавим
-// когда понадобятся.
-$color-accent: #00e5ff; // electric cyan
-$color-accent-soft: rgba(0, 229, 255, 0.16);
-$color-accent-secondary: #ff2ec4; // magenta
+// Акценты: серый основной + светло-серый вторичный.
+$color-accent: var(--color-accent, #a3a3a3);
+$color-accent-soft: var(--color-accent-soft, rgba(163, 163, 163, 0.14));
+$color-accent-secondary: var(--color-accent-secondary, #eeeeee);
 
-$color-danger: #ff3b5c;
-$color-success: #3df5d3;
+$color-danger: var(--color-danger, #d96773);
+$color-success: var(--color-success, #8fc7b1);
 
 // Радиусы
 $radius-sm: 6px;
@@ -38,12 +39,12 @@ $radius-xl: 16px;
 $radius-xxl: 30px;
 $radius-pill: 9999px;
 
-// Тени — глубокие, поверх чёрного базового фона + отдельные neon-glow'ы
+// Тени — глубокие, поверх чёрного базового фона + очень сдержанный gray-glow.
 $shadow-card: 0 4px 20px rgba(0, 0, 0, 0.65);
 $shadow-card-hover: 0 8px 30px rgba(0, 0, 0, 0.8);
 $shadow-panel: 0 -8px 32px rgba(0, 0, 0, 0.78);
 $shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.55);
-$shadow-accent-glow: 0 6px 22px rgba(0, 229, 255, 0.5);
+$shadow-accent-glow: var(--shadow-accent-glow, 0 4px 16px rgba(163, 163, 163, 0.28));
 
 // Blur
 $blur-sm: blur(5px);
