@@ -11,6 +11,12 @@ export const en = {
     character: 'Character',
     profile: 'Profile',
   },
+  inventory: {
+    title: 'Inventory',
+    nftBadge: 'NFT',
+    loading: 'Loading inventory...',
+    empty: 'Nothing here yet',
+  },
   collections: {
     title: 'Collections',
     searchPlaceholder: 'Search collections...',

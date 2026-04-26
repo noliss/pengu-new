@@ -1,0 +1,101 @@
+@use '@shared/styles/tokens' as t;
+
+.card {
+  overflow: hidden;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: t.$shadow-card-hover;
+    border: 1px solid t.$color-glass-border-strong;
+  }
+}
+
+.mediaWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.media {
+  height: 140px;
+  border-bottom: 1px solid t.$color-glass-border-soft;
+  background: t.$color-glass-bg-soft;
+  object-fit: cover;
+}
+
+.imageErrorBox {
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: t.$color-glass-bg-soft;
+  border-bottom: 1px solid t.$color-glass-border-soft;
+}
+
+.badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.badge {
+  @include t.glass-surface(t.$color-overlay-strong, t.$color-glass-border-soft);
+  border-radius: t.$radius-pill;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: t.$color-text-primary;
+  box-shadow: t.$shadow-soft;
+}
+
+.badgeNft {
+  border-color: rgba(var(--color-accent-rgb, 163, 163, 163), 0.45);
+  color: t.$color-accent-secondary;
+  text-shadow: 0 0 8px rgba(var(--color-accent-rgb, 163, 163, 163), 0.35);
+}
+
+.badgeId {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  font-weight: 600;
+  color: t.$color-text-primary;
+}
+
+.content {
+  background: t.$color-overlay;
+  backdrop-filter: t.$blur-sm;
+  border-top: 1px solid t.$color-glass-border-soft;
+  min-height: 38px;
+  padding: 10px;
+  padding-bottom: 10px !important;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  color: t.$color-text-primary;
+  text-shadow: 0 0 6px rgba(var(--color-accent-rgb, 163, 163, 163), 0.45);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.25;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}

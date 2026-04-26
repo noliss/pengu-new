@@ -11,6 +11,12 @@ export const ru = {
     character: 'Персонаж',
     profile: 'Профиль',
   },
+  inventory: {
+    title: 'Инвентарь',
+    nftBadge: 'NFT',
+    loading: 'Загружаем инвентарь...',
+    empty: 'Пока пусто',
+  },
   collections: {
     title: 'Коллекции',
     searchPlaceholder: 'Поиск коллекций...',

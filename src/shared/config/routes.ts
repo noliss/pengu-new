@@ -3,6 +3,7 @@ export const ROUTES = {
   COLLECTION_DETAILS: '/collections/:id',
   GENERATE: '/generate',
   PROFILE: '/profile',
+  INVENTORY: '/inventory',
 } as const;
 
 export type RouteKey = keyof typeof ROUTES;

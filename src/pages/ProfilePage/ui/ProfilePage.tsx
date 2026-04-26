@@ -1,5 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@shared/config/routes';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -25,6 +27,7 @@ const MOCK_REFERRAL = {
 
 export const ProfilePage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const user = useAppSelector(selectUser);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
@@ -37,8 +40,8 @@ export const ProfilePage = () => {
   }, []);
 
   const handleInventory = useCallback(() => {
-    // TODO: переход в инвентарь, когда появится роут/страница.
-  }, []);
+    navigate(ROUTES.INVENTORY);
+  }, [navigate]);
 
   const handleCharacters = useCallback(() => {
     // TODO: переход к сгенерированным персонажам (история).
@@ -46,7 +49,7 @@ export const ProfilePage = () => {
 
   return (
     <Page>
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" sx={{ padding: '15px 15px' }}>
         <PageHeader title={t('profile.title')} rightSlot={<ConnectWalletButton />} />
 
         <Box className={styles.stack}>
