@@ -15,7 +15,7 @@ interface GenerateSettingsDialogProps {
   characterName?: string;
   generationType?: GenerationType;
   onSave?: (characterName: string, generationType: GenerationType) => void;
-  /** У Modal на странице генерации: меньше фриза при открытии поверх Lottie. */
+  /** `disableScrollLock` у Drawer/Modal (страница генерации и т.п.). */
   disableScrollLock?: boolean;
 }
 

@@ -6,77 +6,34 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from 'react';
-import Dialog, { type DialogProps } from '@mui/material/Dialog';
+import { useForkRef } from '@mui/material/utils';
+import SwipeableDrawer, { type SwipeableDrawerProps } from '@mui/material/SwipeableDrawer';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import cn from 'classnames';
 import styles from './BottomSheet.module.scss';
 
-// Пороги drag-to-close: или достаточно далеко утянули вниз,
-// или бросили быстрым flick-жестом (px/ms).
-const DRAG_CLOSE_DISTANCE_PX = 80;
-const DRAG_CLOSE_VELOCITY = 0.6;
+/** MUI SwipeableDrawer обрабатывает только touch; для мыши/пера — тянем paper за ручку. */
+const GRIP_DRAG_CLOSE_PX = 80;
+const GRIP_DRAG_VELOCITY = 0.6;
 
 export interface BottomSheetProps {
   open: boolean;
   onClose: () => void;
-  /** Заголовок сверху (центрированный). Если не задан — блок не рендерится. */
   title?: ReactNode;
-  /** Основное содержимое. */
   children: ReactNode;
-  /**
-   * Ряд кнопок действий (обычно 1–2 `<Button>`). Если не задан — футер скрыт.
-   * Дефолт-раскладка: flex-row, gap=8px, каждая кнопка `flex: 1`.
-   */
   actions?: ReactNode;
-  /**
-   * `default` — штатный backdrop из MUI (затемнение + лёгкий blur).
-   * `transparent` — почти прозрачный без blur: нужно там, где поверх sheet'а
-   * важно видеть контент под ним (например, пингвин при выборе цвета).
-   */
   backdrop?: 'default' | 'transparent';
-  /**
-   * Показать маленький "ручку" сверху (iOS-style) — намёк на то, что sheet
-   * можно свайпнуть вниз. По умолчанию включено: хотим единый UX
-   * "тянущегося снизу" на всех диалогах. Выключать — только если мешает.
-   */
   showGrip?: boolean;
-  /** Дополнительный класс на `.body` (редко нужен — для тонких подкруток). */
   bodyClassName?: string;
-  /** id заголовка — если передан, используется как `aria-labelledby` у Dialog. */
   titleId?: string;
-  /**
-   * Если `true`, MUI Dialog не размонтирует поддерево после закрытия
-   * (скрыто в DOM). Удобно для часто открываемых sheet'ов.
-   */
   keepMounted?: boolean;
-  /**
-   * Отключает scroll lock у Modal (padding на `body`, блокировка скролла).
-   * На странице генерации в связке с Lottie + `backdrop-filter` + фикс-навом
-   * это часто снимает заметный фриз при первом открытии sheet'а.
-   */
   disableScrollLock?: boolean;
-  /** Доп. `slotProps` у MUI Dialog (редко). */
-  slotProps?: DialogProps['slotProps'];
+  slotProps?: SwipeableDrawerProps['slotProps'];
 }
 
 /**
- * Единый bottom-sheet проекта.
- *
- * MUI `<Dialog>` с glassBottom-paper у нижнего края; переходы отключены
- * (`transitionDuration: 0`). Каркас (padding, заголовок, grip, backdrop)
- * собран здесь.
- *
- * Drag-to-close: по нажатию и тяге вниз за grip-ручку paper смещается
- * вслед за пальцем/курсором; при отпускании либо закрывается (если
- * утянули достаточно далеко или бросили быстрым flick'ом), либо
- * отпрыгивает обратно. Работает и на touch, и на mouse через
- * Pointer Events (без внешней библиотеки).
- *
- * Используется:
- * - `GenerateSettingsDialog` — форма "Создать персонажа";
- * - confirm-диалог удаления в `GenerateActions`;
- * - кастомный color-picker в `ColorPickerButton`.
+ * Нижний sheet: `SwipeableDrawer` (touch-свайп) + drag за ручку мышью/пером.
  */
 export const BottomSheet = ({
   open,
@@ -90,19 +47,43 @@ export const BottomSheet = ({
   titleId,
   keepMounted = false,
   disableScrollLock = false,
-  slotProps,
+  slotProps: userSlotProps,
 }: BottomSheetProps) => {
   const backdropClassName =
     backdrop === 'transparent' ? styles.backdropTransparent : undefined;
 
-  // Ref на Paper и состояние drag-жеста. Держим всё в ref'ах, чтобы не
-  // триггерить ре-рендеры на каждом pointermove (60+ fps).
-  const paperRef = useRef<HTMLDivElement | null>(null);
-  const dragRef = useRef<{ startY: number; lastY: number; lastT: number } | null>(null);
+  let paperRest: Record<string, unknown> = {};
+  let paperUserClass: string | undefined;
+  let paperUserRef: React.Ref<HTMLDivElement> | undefined;
+  if (userSlotProps?.paper && typeof userSlotProps.paper === 'object' && !Array.isArray(userSlotProps.paper)) {
+    const p = userSlotProps.paper as {
+      className?: string;
+      ref?: React.Ref<HTMLDivElement>;
+    };
+    const { className, ref, ...rest } = p;
+    paperUserClass = typeof className === 'string' ? className : undefined;
+    paperUserRef = ref;
+    paperRest = rest as Record<string, unknown>;
+  }
 
-  // При каждом новом открытии сбрасываем возможные остатки inline-стилей:
-  // после закрытия drag'ом на paper остаётся transform/transition.
-  // Если не почистить — следующее открытие начнётся с неправильной точки.
+  let backdropRest: Record<string, unknown> = {};
+  let backdropUserClass: string | undefined;
+  if (
+    userSlotProps?.backdrop &&
+    typeof userSlotProps.backdrop === 'object' &&
+    !Array.isArray(userSlotProps.backdrop)
+  ) {
+    const { className, ...rest } = userSlotProps.backdrop as { className?: string };
+    backdropUserClass = typeof className === 'string' ? className : undefined;
+    backdropRest = rest as Record<string, unknown>;
+  }
+
+  const paperRef = useRef<HTMLDivElement | null>(null);
+  const gripDragRef = useRef<{ startY: number; lastY: number; lastT: number } | null>(null);
+
+  /** Через PaperProps: иначе ref из slotProps.paper перезапишет внутренний ref SwipeableDrawer и сломает touch-свайп. */
+  const paperPropsRef = useForkRef(paperRef, paperUserRef);
+
   useEffect(() => {
     if (!open) return;
     const paper = paperRef.current;
@@ -112,62 +93,49 @@ export const BottomSheet = ({
     }
   }, [open]);
 
-  const handlePointerDown = useCallback((e: ReactPointerEvent<HTMLButtonElement>) => {
-    // Игнорируем правую кнопку мыши и случайные PEN/модификаторы.
-    if (e.button !== undefined && e.button !== 0) return;
+  const handleGripPointerDown = useCallback((e: ReactPointerEvent<HTMLButtonElement>) => {
+    if (e.pointerType === 'touch') return;
+    if (e.button !== 0) return;
     const paper = paperRef.current;
     if (!paper) return;
     e.currentTarget.setPointerCapture(e.pointerId);
     paper.style.transition = 'none';
-    dragRef.current = {
+    gripDragRef.current = {
       startY: e.clientY,
       lastY: e.clientY,
       lastT: e.timeStamp,
     };
   }, []);
 
-  const handlePointerMove = useCallback((e: ReactPointerEvent<HTMLButtonElement>) => {
-    const drag = dragRef.current;
+  const handleGripPointerMove = useCallback((e: ReactPointerEvent<HTMLButtonElement>) => {
+    if (e.pointerType === 'touch') return;
+    const drag = gripDragRef.current;
     const paper = paperRef.current;
     if (!drag || !paper) return;
     const delta = e.clientY - drag.startY;
-    // Разрешаем только движение вниз — вверх игнорируется.
     const clamped = delta > 0 ? delta : 0;
     paper.style.transform = clamped > 0 ? `translateY(${clamped}px)` : '';
     drag.lastY = e.clientY;
     drag.lastT = e.timeStamp;
   }, []);
 
-  const handleGripKeyDown = useCallback(
-    (e: ReactKeyboardEvent<HTMLButtonElement>) => {
-      // Для клавиатурных пользователей grip работает просто как "закрыть".
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        onClose();
-      }
-    },
-    [onClose],
-  );
-
-  const handlePointerUp = useCallback(
+  const handleGripPointerUp = useCallback(
     (e: ReactPointerEvent<HTMLButtonElement>) => {
-      const drag = dragRef.current;
+      if (e.pointerType === 'touch') return;
+      const drag = gripDragRef.current;
       const paper = paperRef.current;
-      dragRef.current = null;
+      gripDragRef.current = null;
       try {
         e.currentTarget.releasePointerCapture(e.pointerId);
       } catch {
-        // pointer мог уже не быть captured (cancel / системное прерывание).
+        /* noop */
       }
       if (!drag || !paper) return;
 
       const delta = Math.max(0, e.clientY - drag.startY);
-      // Скорость только "в последнем кадре" — грубая, но её хватает,
-      // чтобы отличить быстрый flick от медленного перетаскивания.
       const dt = Math.max(1, e.timeStamp - drag.lastT);
       const velocity = (e.clientY - drag.lastY) / dt;
-      const shouldClose =
-        delta > DRAG_CLOSE_DISTANCE_PX || velocity > DRAG_CLOSE_VELOCITY;
+      const shouldClose = delta > GRIP_DRAG_CLOSE_PX || velocity > GRIP_DRAG_VELOCITY;
 
       paper.style.transition = 'none';
       paper.style.transform = '';
@@ -178,38 +146,58 @@ export const BottomSheet = ({
     [onClose],
   );
 
+  const handleGripKeyDown = useCallback(
+    (e: ReactKeyboardEvent<HTMLButtonElement>) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onClose();
+      }
+    },
+    [onClose],
+  );
+
+  const mergedSlotProps: SwipeableDrawerProps['slotProps'] = {
+    ...userSlotProps,
+    root: {
+      ...(typeof userSlotProps?.root === 'object' && userSlotProps.root ? userSlotProps.root : {}),
+      ...(title && titleId ? { 'aria-labelledby': titleId as string } : {}),
+    },
+    paper: {
+      ...paperRest,
+      variant: 'glassBottom',
+      elevation: 0,
+      className: cn(styles.paper, paperUserClass),
+    },
+    backdrop: {
+      ...backdropRest,
+      className: cn(backdropClassName, backdropUserClass),
+    },
+  };
+
   return (
-    <Dialog
+    <SwipeableDrawer
+      anchor="bottom"
       open={open}
-      onClose={onClose}
-      transitionDuration={0}
-      fullWidth
-      maxWidth={false}
+      variant="temporary"
+      PaperProps={{ ref: paperPropsRef }}
+      onClose={() => onClose()}
+      onOpen={() => {}}
+      disableSwipeToOpen
+      allowSwipeInChildren
       keepMounted={keepMounted}
       disableScrollLock={disableScrollLock}
-      aria-labelledby={title && titleId ? titleId : undefined}
-      slotProps={{
-        ...slotProps,
-        paper: {
-          variant: 'glassBottom',
-          className: styles.paper,
-          elevation: 0,
-          ref: paperRef,
-        },
-        ...(backdropClassName
-          ? { backdrop: { className: backdropClassName } }
-          : {}),
-      }}
+      disableBackdropTransition={backdrop === 'transparent'}
+      slotProps={mergedSlotProps}
     >
       <Box className={cn(styles.body, bodyClassName)}>
         {showGrip && (
           <button
             type="button"
-            className={styles.gripArea}
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onPointerCancel={handlePointerUp}
+            className={styles.gripRow}
+            onPointerDown={handleGripPointerDown}
+            onPointerMove={handleGripPointerMove}
+            onPointerUp={handleGripPointerUp}
+            onPointerCancel={handleGripPointerUp}
             onKeyDown={handleGripKeyDown}
             aria-label="Свернуть"
           >
@@ -217,13 +205,13 @@ export const BottomSheet = ({
           </button>
         )}
         {title !== undefined && title !== null && title !== '' && (
-          <Typography id={titleId} className={styles.title}>
+          <Typography id={titleId} className={styles.title} component="h2">
             {title}
           </Typography>
         )}
         {children}
         {actions && <Box className={styles.actions}>{actions}</Box>}
       </Box>
-    </Dialog>
+    </SwipeableDrawer>
   );
 };
