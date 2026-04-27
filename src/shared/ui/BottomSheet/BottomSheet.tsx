@@ -180,6 +180,8 @@ export const BottomSheet = ({
       open={open}
       variant="temporary"
       PaperProps={{ ref: paperPropsRef }}
+      /** Иначе MUI для temporary всегда ставит keepMounted: true — дети Modal не снимаются с закрытия. */
+      ModalProps={{ keepMounted }}
       onClose={() => onClose()}
       onOpen={() => {}}
       disableSwipeToOpen

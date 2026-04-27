@@ -186,6 +186,8 @@ const ColorPickerButtonComponent = ({
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
+  /** Первый монтаж BottomSheet только после «Свой цвет» — не тянем SwipeableDrawer в дерево при генерации слайдера. */
+  const [sheetMounted, setSheetMounted] = useState(false);
 
   const isCustomSelected = useMemo(
     () => Boolean(selectedColor && !colors.includes(selectedColor)),
@@ -276,6 +278,7 @@ const ColorPickerButtonComponent = ({
 
   const openSheet = useCallback(() => {
     closePopover();
+    setSheetMounted(true);
     setSheetOpen(true);
   }, [closePopover]);
 
@@ -447,123 +450,124 @@ const ColorPickerButtonComponent = ({
         </Box>
       </Popover>
 
-      <BottomSheet
-        open={sheetOpen}
-        onClose={closeSheet}
-        // Backdrop прозрачный: sheet полупрозрачный, хочется видеть пингвина
-        // позади, чтобы на лету оценивать выбранный цвет.
-        backdrop="transparent"
-        bodyClassName={styles.compactBody}
-      >
-        <Box className={styles.pickerWrapper}>
-          <Suspense fallback={<HexColorPickerLoader />}>
-            <LazyHexColorPicker color={liveColor} onChange={handlePickerChange} />
-          </Suspense>
-        </Box>
-
-
-        <Box className={styles.formatToggle} role="tablist" aria-label="Формат цвета">
-          {(['hex', 'rgb', 'hsl'] as const).map((mode) => (
-            <button
-              key={mode}
-              type="button"
-              role="tab"
-              aria-selected={format === mode}
-              className={cn(styles.formatTab, {
-                [styles.formatTabActive]: format === mode,
-              })}
-              onClick={() => setFormat(mode)}
-            >
-              {mode.toUpperCase()}
-            </button>
-          ))}
-        </Box>
-
-        <Box className={styles.hexRow}>
-          <Box className={styles.hexField}>
-            <Box
-              className={styles.hexSwatch}
-              style={{ backgroundColor: liveColor }}
-              aria-hidden
-            />
-            {format === 'hex' && (
-              <input
-                type="text"
-                className={styles.hexInput}
-                value={hexInput}
-                onChange={handleHexChange}
-                spellCheck={false}
-                autoComplete="off"
-                maxLength={7}
-                aria-label="HEX-код цвета"
-              />
-            )}
-            {format === 'rgb' && (
-              <Box className={styles.rgbInputs} role="group" aria-label="RGB-каналы">
-                {RGB_CHANNELS.map(({ key, label, aria }) => (
-                  <Box key={key} className={styles.rgbChannel}>
-                    <span className={styles.rgbLabel} aria-hidden>
-                      {label}
-                    </span>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      className={styles.rgbInput}
-                      value={rgbInput[key]}
-                      onChange={handleRgbChange(key)}
-                      onBlur={handleRgbBlur(key)}
-                      spellCheck={false}
-                      autoComplete="off"
-                      maxLength={3}
-                      aria-label={aria}
-                    />
-                  </Box>
-                ))}
-              </Box>
-            )}
-            {format === 'hsl' && (
-              <Box className={styles.rgbInputs} role="group" aria-label="HSL-каналы">
-                {HSL_CHANNELS.map(({ key, label, aria }) => (
-                  <Box key={key} className={styles.rgbChannel}>
-                    <span className={styles.rgbLabel} aria-hidden>
-                      {label}
-                    </span>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      className={styles.rgbInput}
-                      value={hslInput[key]}
-                      onChange={handleHslChange(key)}
-                      onBlur={handleHslBlur(key)}
-                      spellCheck={false}
-                      autoComplete="off"
-                      maxLength={3}
-                      aria-label={aria}
-                    />
-                  </Box>
-                ))}
-              </Box>
-            )}
-            <IconButton
-              size="small"
-              className={styles.hexCopy}
-              onClick={handleCopy}
-              aria-label={copied ? 'Скопировано' : 'Скопировать'}
-            >
-              {copied ? <CheckIcon fontSize="small" /> : <ContentCopyIcon fontSize="small" />}
-            </IconButton>
+      {sheetMounted && (
+        <BottomSheet
+          open={sheetOpen}
+          onClose={closeSheet}
+          // Backdrop прозрачный: sheet полупрозрачный, хочется видеть пингвина
+          // позади, чтобы на лету оценивать выбранный цвет.
+          backdrop="transparent"
+          bodyClassName={styles.compactBody}
+        >
+          <Box className={styles.pickerWrapper}>
+            <Suspense fallback={<HexColorPickerLoader />}>
+              <LazyHexColorPicker color={liveColor} onChange={handlePickerChange} />
+            </Suspense>
           </Box>
 
-          <IconButton
-            size="small"
-            className={styles.hexApply}
-            onClick={closeSheet}
-            aria-label="Применить цвет"
-          >
-            <CheckRoundedIcon fontSize="small" />
-          </IconButton>
-        </Box>
-      </BottomSheet>
+          <Box className={styles.formatToggle} role="tablist" aria-label="Формат цвета">
+            {(['hex', 'rgb', 'hsl'] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                role="tab"
+                aria-selected={format === mode}
+                className={cn(styles.formatTab, {
+                  [styles.formatTabActive]: format === mode,
+                })}
+                onClick={() => setFormat(mode)}
+              >
+                {mode.toUpperCase()}
+              </button>
+            ))}
+          </Box>
+
+          <Box className={styles.hexRow}>
+            <Box className={styles.hexField}>
+              <Box
+                className={styles.hexSwatch}
+                style={{ backgroundColor: liveColor }}
+                aria-hidden
+              />
+              {format === 'hex' && (
+                <input
+                  type="text"
+                  className={styles.hexInput}
+                  value={hexInput}
+                  onChange={handleHexChange}
+                  spellCheck={false}
+                  autoComplete="off"
+                  maxLength={7}
+                  aria-label="HEX-код цвета"
+                />
+              )}
+              {format === 'rgb' && (
+                <Box className={styles.rgbInputs} role="group" aria-label="RGB-каналы">
+                  {RGB_CHANNELS.map(({ key, label, aria }) => (
+                    <Box key={key} className={styles.rgbChannel}>
+                      <span className={styles.rgbLabel} aria-hidden>
+                        {label}
+                      </span>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        className={styles.rgbInput}
+                        value={rgbInput[key]}
+                        onChange={handleRgbChange(key)}
+                        onBlur={handleRgbBlur(key)}
+                        spellCheck={false}
+                        autoComplete="off"
+                        maxLength={3}
+                        aria-label={aria}
+                      />
+                    </Box>
+                  ))}
+                </Box>
+              )}
+              {format === 'hsl' && (
+                <Box className={styles.rgbInputs} role="group" aria-label="HSL-каналы">
+                  {HSL_CHANNELS.map(({ key, label, aria }) => (
+                    <Box key={key} className={styles.rgbChannel}>
+                      <span className={styles.rgbLabel} aria-hidden>
+                        {label}
+                      </span>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        className={styles.rgbInput}
+                        value={hslInput[key]}
+                        onChange={handleHslChange(key)}
+                        onBlur={handleHslBlur(key)}
+                        spellCheck={false}
+                        autoComplete="off"
+                        maxLength={3}
+                        aria-label={aria}
+                      />
+                    </Box>
+                  ))}
+                </Box>
+              )}
+              <IconButton
+                size="small"
+                className={styles.hexCopy}
+                onClick={handleCopy}
+                aria-label={copied ? 'Скопировано' : 'Скопировать'}
+              >
+                {copied ? <CheckIcon fontSize="small" /> : <ContentCopyIcon fontSize="small" />}
+              </IconButton>
+            </Box>
+
+            <IconButton
+              size="small"
+              className={styles.hexApply}
+              onClick={closeSheet}
+              aria-label="Применить цвет"
+            >
+              <CheckRoundedIcon fontSize="small" />
+            </IconButton>
+          </Box>
+        </BottomSheet>
+      )}
     </>
   );
 };
