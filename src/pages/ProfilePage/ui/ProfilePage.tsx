@@ -8,15 +8,14 @@ import Typography from '@mui/material/Typography';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
-import { Page, PageHeader } from '@shared/ui';
+import { Page, PageHeader, NavRow } from '@shared/ui';
 import { env } from '@shared/config/env';
 import { ConnectWalletButton } from '@features/connect-wallet';
+import { ProfileSettingsDialog } from '@features/profile-settings';
 import { useAppSelector } from '@shared/store';
 import { selectUser } from '@entities/user';
-import { UserInfoCard } from './UserInfoCard';
-import { ReferralCard } from './ReferralCard';
-import { NavRow } from './NavRow';
-import { ProfileSettingsDialog } from './ProfileSettingsDialog';
+import { UserInfoCard } from '@widgets/ProfileUserInfo';
+import { ReferralCard } from '@widgets/ProfileReferralCard';
 import styles from './ProfilePage.module.scss';
 
 // Моки: в проекте ещё нет referral-модели, показываем правдоподобные значения.

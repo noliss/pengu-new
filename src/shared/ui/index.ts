@@ -2,6 +2,7 @@ export * from './BottomSheet';
 export * from './CardSlider';
 export * from './ErrorBoundary';
 export * from './Loader';
+export * from './NavRow';
 export * from './LottieAnimation';
 export * from './Page';
 export * from './PageHeader';

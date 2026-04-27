@@ -42,7 +42,8 @@ export async function init(options: InitOptions): Promise<void> {
   setDebug(options.debug);
   initSDK();
 
-  if (options.eruda) {
+  // Только dev-сервер: в production Vite вырезает ветку целиком — чанк eruda не попадает в билд.
+  if (import.meta.env.DEV && options.eruda) {
     void import('eruda').then(({ default: eruda }) => {
       eruda.init();
       positionEruda(eruda);
