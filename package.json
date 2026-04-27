@@ -1,7 +1,7 @@
 {
   "name": "pengu-react-app",
   "private": true,
-  "version": "0.0.14",
+  "version": "0.0.22",
   "type": "module",
   "homepage": "https://noliq.github.io/pengu-new",
   "scripts": {

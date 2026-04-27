@@ -2,7 +2,6 @@ import ReactDOM from 'react-dom/client';
 import { StrictMode } from 'react';
 import { retrieveLaunchParams } from '@tma.js/sdk-react';
 
-import App from '@app/App';
 import { AppProviders } from '@app/providers';
 import { init } from '@app/init';
 import { initSentry } from '@app/sentry';
@@ -35,9 +34,7 @@ const bootstrap = async () => {
 
   root.render(
     <StrictMode>
-      <AppProviders>
-        <App />
-      </AppProviders>
+      <AppProviders />
     </StrictMode>,
   );
 };

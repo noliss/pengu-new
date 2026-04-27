@@ -1,18 +1,15 @@
-import { useMemo, type ReactNode } from 'react';
+import { useMemo } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
-import { HashRouter } from 'react-router-dom';
+import { RouterProvider } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { TonConnectUIProvider } from '@tonconnect/ui-react';
 import { store } from '@shared/store';
 import { createAppTheme } from '@shared/config/theme';
 import { ErrorBoundary } from '@shared/ui/ErrorBoundary';
 import { env } from '@shared/config/env';
+import { appRouter } from '@app/router/appHashRouter';
 
-interface AppProvidersProps {
-  children: ReactNode;
-}
-
-export const AppProviders = ({ children }: AppProvidersProps) => {
+export const AppProviders = () => {
   const theme = useMemo(() => createAppTheme(), []);
 
   return (
@@ -21,7 +18,7 @@ export const AppProviders = ({ children }: AppProvidersProps) => {
         <ReduxProvider store={store}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <HashRouter>{children}</HashRouter>
+            <RouterProvider router={appRouter} />
           </ThemeProvider>
         </ReduxProvider>
       </TonConnectUIProvider>

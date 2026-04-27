@@ -458,6 +458,7 @@ const ColorPickerButtonComponent = ({
           // позади, чтобы на лету оценивать выбранный цвет.
           backdrop="transparent"
           bodyClassName={styles.compactBody}
+          disableSwipeToDismiss
         >
           <Box className={styles.pickerWrapper}>
             <Suspense fallback={<HexColorPickerLoader />}>

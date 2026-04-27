@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from 'react';
 import { useForkRef } from '@mui/material/utils';
+import Drawer from '@mui/material/Drawer';
 import SwipeableDrawer, { type SwipeableDrawerProps } from '@mui/material/SwipeableDrawer';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -30,6 +31,11 @@ export interface BottomSheetProps {
   keepMounted?: boolean;
   disableScrollLock?: boolean;
   slotProps?: SwipeableDrawerProps['slotProps'];
+  /**
+   * Обычный Drawer без document-touch свайпа SwipeableDrawer — для палитр/слайдеров.
+   * Закрытие: ручка (в т.ч. пальцем), backdrop, кнопки в контенте.
+   */
+  disableSwipeToDismiss?: boolean;
 }
 
 /**
@@ -48,7 +54,9 @@ export const BottomSheet = ({
   keepMounted = false,
   disableScrollLock = false,
   slotProps: userSlotProps,
+  disableSwipeToDismiss = false,
 }: BottomSheetProps) => {
+  const swipeToDismiss = !disableSwipeToDismiss;
   const backdropClassName =
     backdrop === 'transparent' ? styles.backdropTransparent : undefined;
 
@@ -94,7 +102,7 @@ export const BottomSheet = ({
   }, [open]);
 
   const handleGripPointerDown = useCallback((e: ReactPointerEvent<HTMLButtonElement>) => {
-    if (e.pointerType === 'touch') return;
+    if (swipeToDismiss && e.pointerType === 'touch') return;
     if (e.button !== 0) return;
     const paper = paperRef.current;
     if (!paper) return;
@@ -105,10 +113,10 @@ export const BottomSheet = ({
       lastY: e.clientY,
       lastT: e.timeStamp,
     };
-  }, []);
+  }, [swipeToDismiss]);
 
   const handleGripPointerMove = useCallback((e: ReactPointerEvent<HTMLButtonElement>) => {
-    if (e.pointerType === 'touch') return;
+    if (swipeToDismiss && e.pointerType === 'touch') return;
     const drag = gripDragRef.current;
     const paper = paperRef.current;
     if (!drag || !paper) return;
@@ -117,11 +125,11 @@ export const BottomSheet = ({
     paper.style.transform = clamped > 0 ? `translateY(${clamped}px)` : '';
     drag.lastY = e.clientY;
     drag.lastT = e.timeStamp;
-  }, []);
+  }, [swipeToDismiss]);
 
   const handleGripPointerUp = useCallback(
     (e: ReactPointerEvent<HTMLButtonElement>) => {
-      if (e.pointerType === 'touch') return;
+      if (swipeToDismiss && e.pointerType === 'touch') return;
       const drag = gripDragRef.current;
       const paper = paperRef.current;
       gripDragRef.current = null;
@@ -153,7 +161,7 @@ export const BottomSheet = ({
         onClose();
       }
     },
-    [onClose],
+    [onClose, swipeToDismiss],
   );
 
   const mergedSlotProps: SwipeableDrawerProps['slotProps'] = {
@@ -174,46 +182,67 @@ export const BottomSheet = ({
     },
   };
 
+  const sheetBody = (
+    <Box className={cn(styles.body, bodyClassName)}>
+      {showGrip && (
+        <button
+          type="button"
+          className={styles.gripRow}
+          onPointerDown={handleGripPointerDown}
+          onPointerMove={handleGripPointerMove}
+          onPointerUp={handleGripPointerUp}
+          onPointerCancel={handleGripPointerUp}
+          onKeyDown={handleGripKeyDown}
+          aria-label="Свернуть"
+        >
+          <span className={styles.grip} aria-hidden />
+        </button>
+      )}
+      {title !== undefined && title !== null && title !== '' && (
+        <Typography id={titleId} className={styles.title} component="h2">
+          {title}
+        </Typography>
+      )}
+      {children}
+      {actions && <Box className={styles.actions}>{actions}</Box>}
+    </Box>
+  );
+
+  if (disableSwipeToDismiss) {
+    return (
+      <Drawer
+        anchor="bottom"
+        open={open}
+        variant="temporary"
+        PaperProps={{ ref: paperPropsRef }}
+        ModalProps={{ keepMounted }}
+        onClose={() => onClose()}
+        keepMounted={keepMounted}
+        disableScrollLock={disableScrollLock}
+        slotProps={mergedSlotProps}
+      >
+        {sheetBody}
+      </Drawer>
+    );
+  }
+
   return (
     <SwipeableDrawer
       anchor="bottom"
       open={open}
       variant="temporary"
       PaperProps={{ ref: paperPropsRef }}
-      /** Иначе MUI для temporary всегда ставит keepMounted: true — дети Modal не снимаются с закрытия. */
       ModalProps={{ keepMounted }}
       onClose={() => onClose()}
       onOpen={() => {}}
       disableSwipeToOpen
-      allowSwipeInChildren
+      allowSwipeInChildren={false}
       keepMounted={keepMounted}
       disableScrollLock={disableScrollLock}
       disableBackdropTransition={backdrop === 'transparent'}
       slotProps={mergedSlotProps}
     >
-      <Box className={cn(styles.body, bodyClassName)}>
-        {showGrip && (
-          <button
-            type="button"
-            className={styles.gripRow}
-            onPointerDown={handleGripPointerDown}
-            onPointerMove={handleGripPointerMove}
-            onPointerUp={handleGripPointerUp}
-            onPointerCancel={handleGripPointerUp}
-            onKeyDown={handleGripKeyDown}
-            aria-label="Свернуть"
-          >
-            <span className={styles.grip} aria-hidden />
-          </button>
-        )}
-        {title !== undefined && title !== null && title !== '' && (
-          <Typography id={titleId} className={styles.title} component="h2">
-            {title}
-          </Typography>
-        )}
-        {children}
-        {actions && <Box className={styles.actions}>{actions}</Box>}
-      </Box>
+      {sheetBody}
     </SwipeableDrawer>
   );
 };

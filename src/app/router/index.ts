@@ -1,2 +1,2 @@
-export * from './AppRoutes';
+export { appRouter } from './appHashRouter';
 export * from './RequireWallet';

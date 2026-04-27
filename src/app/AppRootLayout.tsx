@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import { authenticateUser, selectAuthStatus } from '@entities/user';
 import { selectInitDataRaw, selectAppReady } from '@entities/app';
 import { WalletStatusListener } from '@features/connect-wallet';
-import { AppRoutes } from './router';
+import { ScrollToTop } from '@shared/ui';
 
-const App = () => {
+export const AppRootLayout = () => {
   const dispatch = useAppDispatch();
   const appReady = useAppSelector(selectAppReady);
   const initDataRaw = useAppSelector(selectInitDataRaw);
@@ -21,9 +22,8 @@ const App = () => {
   return (
     <>
       <WalletStatusListener />
-      <AppRoutes />
+      <ScrollToTop />
+      <Outlet />
     </>
   );
 };
-
-export default App;
